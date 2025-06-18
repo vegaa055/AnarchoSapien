@@ -12,6 +12,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Special+Elite&display=swap"
     rel="stylesheet" />
+    
 </head>
 
 <body>
@@ -62,6 +63,15 @@
             </ul>
           </li>
         </ul>
+          <div class="d-flex">
+            <?php if (isset($_SESSION['user_name'])): ?>
+              <span class="navbar-text me-3">Welcome, <?= htmlspecialchars($_SESSION['user_name']) ?>!</span>
+              <a href="logout.php" class="btn btn-outline-danger">Logout</a>
+            <?php else: ?>
+              <a href="login.php" class="btn btn-outline-success me-2">Login</a>
+              <a href="register.php" class="btn btn-outline-primary">Register</a>
+            <?php endif; ?>
+          </div>
       </div>
     </div>
   </nav>
