@@ -65,7 +65,7 @@
         </ul>
           <div class="d-flex">
             <?php if (isset($_SESSION['user_name'])): ?>
-              <span class="navbar-text me-3">Welcome, <?= htmlspecialchars($_SESSION['user_name']) ?>!</span>
+              <span class="navbar-text me-3 welcome-user">Welcome, <?= htmlspecialchars($_SESSION['user_name']) ?>!</span>
               <a href="logout.php" class="btn btn-outline-danger">Logout</a>
             <?php else: ?>
               <a href="login.php" class="btn btn-outline-success me-2">Login</a>

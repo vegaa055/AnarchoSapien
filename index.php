@@ -1,4 +1,8 @@
-<?php include('header.php'); ?>
+<?php
+session_start();
+include('header.php');
+?>
+
 
 <div class="main-content">
   <div class="featured-article">
