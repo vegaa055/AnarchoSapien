@@ -4,11 +4,11 @@ require_once 'db.php';
 $errors = [];
 $success = false;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $user_name = trim($_POST['user_name']);
-    $email = trim($_POST['email']);
-    $password = $_POST['password'];
-    $confirm = $_POST['confirm_password'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {  // Check if the form is submitted
+    $user_name = trim($_POST['user_name']);   // Get the username from the form
+    $email = trim($_POST['email']);           // Get the email from the form
+    $password = $_POST['password'];           // Get the password from the form
+    $confirm = $_POST['confirm_password'];    // Get the confirm password from the form
 
     if (empty($user_name) || empty($password) || empty($confirm) || empty($email)) {
         $errors[] = "All fields are required.";

@@ -4,14 +4,17 @@ session_start();
 
 $errors = [];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $user_name = trim($_POST['user_name']);
-    $password = $_POST['password'];
+// Check if the form is submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {  
+
+    $user_name = trim($_POST['user_name']); // Get the username from the form
+    $password = $_POST['password'];   // Get the password from the form
 
     if (empty($user_name) || empty($password)) {
         $errors[] = "Both fields are required.";
     } else {
-        $stmt = $pdo->prepare("SELECT id, user_name, password_hash FROM users WHERE user_name = ?");
+        $stmt = $pdo->prepare("SELECT id, user_name, password_hash FROM users WHERE user_name = ?");  // Prepare the SQL statement to prevent SQL injection
+        // Execute the statement with the provided username
         $stmt->execute([$user_name]);
         $user = $stmt->fetch();
 
