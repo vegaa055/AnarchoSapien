@@ -40,6 +40,7 @@ body {
 .navbar-brand,
 .nav-link {
   color: #f8f9fa !important;
+  font-family: "Special Elite", monospace;
 }
 
 .navbar-brand:hover,
@@ -71,9 +72,15 @@ body {
 }
 
 .featured-article h2 {
-  font-family: "Pirata One", cursive;
-  font-size: 4rem;
+  font-family: "Special Elite", monospace;
+  font-size: 2.5rem;
   margin-bottom: 1rem;
+}
+
+.article-list h3 {
+  font-family: "Pirata One", cursive;
+  color: #d62828;
+  font-size: 2rem;
 }
 
 .article-list {
@@ -100,6 +107,40 @@ body {
 .article-list a:hover {
   color: #d62828;
   text-decoration: underline;
+}
+
+.article-header h1 {
+  font-family: "Pirata One", cursive;
+  color: #d62828;
+  font-size: 3rem;
+}
+
+.article-header p {
+  font-family: "Special Elite", monospace;
+  color: #d6d6d6;
+  font-size: 1.2rem;
+}
+
+.welcome-user {
+  color: #e9e9e9;
+  font-family: "Special Elite", monospace;
+}
+
+.create-article h2 {
+  font-family: "Pirata One", cursive;
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  font-family: "Special Elite", monospace;
+  color: #f8f9fa;
+}
+
+.article-title {
+  font-family: "Pirata One", cursive;
+  font-size: 2rem;
+  color: #d62828;
 }
 
 footer {

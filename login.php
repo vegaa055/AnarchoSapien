@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <?php if ($errors): ?>
       <div class="alert alert-danger">
-        <ul>
+        <ul> 
           <?php foreach ($errors as $error): ?>
             <li><?= htmlspecialchars($error) ?></li>
           <?php endforeach; ?>
