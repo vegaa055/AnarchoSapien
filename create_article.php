@@ -77,10 +77,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <label for="featured_image" class="form-label">Featured Image</label>
       <input type="file" name="featured_image" id="featured_image" class="form-control" accept="image/*">
     </div>
-    <div class="mb-3">
-      <label for="image" class="form-label">Embedded Image</label>
-      <input type="file" name="image" id="image" class="form-control" accept="image/*">
-    </div>
     <button type="submit" class="btn btn-primary">Publish</button>
   </form>
 </div>
