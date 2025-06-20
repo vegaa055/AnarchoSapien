@@ -37,6 +37,23 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
       $stmt->execute([$_GET['id']]);
       $article = $stmt->fetch();
     }
+    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+      $imageTmpPath = $_FILES['image']['tmp_name'];
+      $imageName = basename($_FILES['image']['name']);
+      $imageExt = pathinfo($imageName, PATHINFO_EXTENSION);
+      $safeName = uniqid() . '.' . strtolower($imageExt);
+      $uploadDir = 'uploads/';
+      $destPath = $uploadDir . $safeName;
+
+      if (!file_exists($uploadDir)) {
+        mkdir($uploadDir, 0755, true);
+      }
+
+      move_uploaded_file($imageTmpPath, $destPath);
+
+      // Optionally: prepend an <img> tag into the content
+      $content = '<img src="' . $destPath . '" alt="Article Image" class="img-fluid mb-3">' . $content;
+    }
   }
 } else {
   die("Invalid article ID.");
@@ -61,7 +78,6 @@ include('header.php');
       </ul>
     </div>
   <?php endif; ?>
-
   <form method="POST">
     <div class="mb-3">
       <label for="title" class="form-label">Title</label>
@@ -71,8 +87,11 @@ include('header.php');
       <label for="content" class="form-label">Content</label>
       <textarea class="form-control" id="content" name="content" rows="10" required><?= htmlspecialchars($article['content']) ?></textarea>
     </div>
+
     <button type="submit" class="btn btn-outline-success">Update Article</button>
   </form>
+
+
 </div>
 
 <?php include('footer.php'); ?>

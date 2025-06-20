@@ -11,8 +11,8 @@ include('header.php');
     $featured = $pdo->query("SELECT id, title, content, created_at FROM articles ORDER BY created_at DESC LIMIT 1")->fetch();
     if ($featured):
     ?>
-      <h4><a href="view_article.php?id=<?= $featured['id'] ?>" class="text-decoration-none text-light"><?= htmlspecialchars($featured['title']) ?></a></h4>
-      <p><small>Published on <?= $featured['created_at'] ?></small></p>
+      <h4><a href="view_article.php?id=<?= $featured['id'] ?>" class="text-decoration-none article-title"><?= htmlspecialchars($featured['title']) ?></a></h4>
+      <p><small>Published on <?= date("F j, Y", strtotime($featured['created_at'])) ?></small></p>
       <p><?= nl2br(substr($featured['content'], 0, 300)) ?>...</p>
       <a href="view_article.php?id=<?= $featured['id'] ?>" class="btn btn-outline-success">Read More</a>
     <?php else: ?>
