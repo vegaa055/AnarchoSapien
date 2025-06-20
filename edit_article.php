@@ -1,97 +1,97 @@
 <?php
 require_once 'db.php';
 session_start();
+include('header.php');
 
-if (!isset($_SESSION['user_id'])) {
-  header("Location: login.php");
-  exit;
+if (!isset($_SESSION['user_id']) || !isset($_GET['id']) || !is_numeric($_GET['id'])) {
+  die("Unauthorized access.");
 }
 
-$article = null;
+// Fetch article
+$stmt = $pdo->prepare("SELECT * FROM articles WHERE id = ? AND author_id = ?");
+$stmt->execute([$_GET['id'], $_SESSION['user_id']]);
+$article = $stmt->fetch();
+
+if (!$article) {
+  die("Article not found or access denied.");
+}
+
 $errors = [];
 $success = false;
 
-if (isset($_GET['id']) && is_numeric($_GET['id'])) {
-  $stmt = $pdo->prepare("SELECT * FROM articles WHERE id = ?");
-  $stmt->execute([$_GET['id']]);
-  $article = $stmt->fetch();
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $title = trim($_POST['title']);
+  $content = $_POST['content'];
+  $featuredImage = $article['featured_image']; // keep existing image unless replaced
 
-  if (!$article || $article['author_id'] != $_SESSION['user_id']) {
-    die("Unauthorized access.");
-  }
+  // If a new featured image is uploaded, replace it
+  if (isset($_FILES['featured_image']) && $_FILES['featured_image']['error'] === UPLOAD_ERR_OK) {
+    $imageTmpPath = $_FILES['featured_image']['tmp_name'];
+    $imageName = basename($_FILES['featured_image']['name']);
+    $imageExt = pathinfo($imageName, PATHINFO_EXTENSION);
+    $safeName = uniqid() . '.' . strtolower($imageExt);
+    $uploadDir = 'uploads/';
+    $destPath = $uploadDir . $safeName;
 
-  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $title = trim($_POST['title']);
-    $content = trim($_POST['content']);
-
-    if (empty($title) || empty($content)) {
-      $errors[] = "Title and content are required.";
-    } else {
-      $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $title)));
-
-      $update = $pdo->prepare("UPDATE articles SET title = ?, slug = ?, content = ? WHERE id = ?");
-      $update->execute([$title, $slug, $content, $_GET['id']]);
-      $success = true;
-
-      // Refresh article data
-      $stmt->execute([$_GET['id']]);
-      $article = $stmt->fetch();
+    if (!file_exists($uploadDir)) {
+      mkdir($uploadDir, 0755, true);
     }
-    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-      $imageTmpPath = $_FILES['image']['tmp_name'];
-      $imageName = basename($_FILES['image']['name']);
-      $imageExt = pathinfo($imageName, PATHINFO_EXTENSION);
-      $safeName = uniqid() . '.' . strtolower($imageExt);
-      $uploadDir = 'uploads/';
-      $destPath = $uploadDir . $safeName;
 
-      if (!file_exists($uploadDir)) {
-        mkdir($uploadDir, 0755, true);
-      }
-
-      move_uploaded_file($imageTmpPath, $destPath);
-
-      // Optionally: prepend an <img> tag into the content
-      $content = '<img src="' . $destPath . '" alt="Article Image" class="img-fluid mb-3">' . $content;
+    if (move_uploaded_file($imageTmpPath, $destPath)) {
+      $featuredImage = $destPath;
     }
   }
-} else {
-  die("Invalid article ID.");
+
+  if (!empty($title) && !empty($content)) {
+    $stmt = $pdo->prepare("UPDATE articles SET title = ?, content = ?, featured_image = ?, updated_at = NOW() WHERE id = ? AND author_id = ?");
+    $stmt->execute([$title, $content, $featuredImage, $article['id'], $_SESSION['user_id']]);
+    $success = true;
+
+    // Refresh article data
+    $stmt = $pdo->prepare("SELECT * FROM articles WHERE id = ?");
+    $stmt->execute([$article['id']]);
+    $article = $stmt->fetch();
+  } else {
+    $errors[] = "Title and content are required.";
+  }
 }
-
-include('header.php');
 ?>
 
 <div class="container mt-5">
   <h2>Edit Article</h2>
 
   <?php if ($success): ?>
-    <div class="alert alert-success">Article updated successfully! <a href="view_article.php?id=<?= $article['id'] ?>">View</a></div>
+    <div class="alert alert-success">Article updated successfully.</div>
   <?php endif; ?>
+  <?php foreach ($errors as $error): ?>
+    <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+  <?php endforeach; ?>
 
-  <?php if ($errors): ?>
-    <div class="alert alert-danger">
-      <ul>
-        <?php foreach ($errors as $error): ?>
-          <li><?= htmlspecialchars($error) ?></li>
-        <?php endforeach; ?>
-      </ul>
-    </div>
-  <?php endif; ?>
-  <form method="POST">
+  <form method="POST" enctype="multipart/form-data">
     <div class="mb-3">
       <label for="title" class="form-label">Title</label>
-      <input type="text" class="form-control" id="title" name="title" value="<?= htmlspecialchars($article['title']) ?>" required>
+      <input type="text" name="title" id="title" class="form-control" value="<?= htmlspecialchars($article['title']) ?>" required>
     </div>
+
     <div class="mb-3">
       <label for="content" class="form-label">Content</label>
-      <textarea class="form-control" id="content" name="content" rows="10" required><?= htmlspecialchars($article['content']) ?></textarea>
+      <textarea name="content" id="content" rows="10" class="form-control"><?= htmlspecialchars($article['content']) ?></textarea>
     </div>
 
-    <button type="submit" class="btn btn-outline-success">Update Article</button>
+    <?php if (!empty($article['featured_image'])): ?>
+      <div class="mb-3">
+        <label class="form-label">Current Featured Image:</label><br>
+        <img src="<?= $article['featured_image'] ?>" alt="Featured Image" class="img-fluid rounded mb-2" style="max-width: 300px;">
+      </div>
+    <?php endif; ?>
+
+    <div class="mb-3">
+      <label for="featured_image" class="form-label">Replace Featured Image</label>
+      <input type="file" name="featured_image" id="featured_image" class="form-control" accept="image/*">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update Article</button>
   </form>
-
-
 </div>
 
 <?php include('footer.php'); ?>

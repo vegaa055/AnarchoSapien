@@ -13,11 +13,12 @@ $success = false;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $title = trim($_POST['title']);
   $content = $_POST['content'];
+  $featuredImage = null;
 
-  // Image handling
-  if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-    $imageTmpPath = $_FILES['image']['tmp_name'];
-    $imageName = basename($_FILES['image']['name']);
+  // Featured image upload
+  if (isset($_FILES['featured_image']) && $_FILES['featured_image']['error'] === UPLOAD_ERR_OK) {
+    $imageTmpPath = $_FILES['featured_image']['tmp_name'];
+    $imageName = basename($_FILES['featured_image']['name']);
     $imageExt = pathinfo($imageName, PATHINFO_EXTENSION);
     $safeName = uniqid() . '.' . strtolower($imageExt);
     $uploadDir = 'uploads/';
@@ -27,15 +28,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       mkdir($uploadDir, 0755, true);
     }
 
-    move_uploaded_file($imageTmpPath, $destPath);
+    if (move_uploaded_file($imageTmpPath, $destPath)) {
+      $featuredImage = $destPath;
+    }
+  }
 
-    $content = '<img src="' . $destPath . '" class="img-fluid mb-3">' . $content;
+  // Optional: embed image in content
+  if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+    $embedTmpPath = $_FILES['image']['tmp_name'];
+    $embedName = basename($_FILES['image']['name']);
+    $embedExt = pathinfo($embedName, PATHINFO_EXTENSION);
+    $embedSafe = uniqid() . '.' . strtolower($embedExt);
+    $embedDest = 'uploads/' . $embedSafe;
+    move_uploaded_file($embedTmpPath, $embedDest);
+    $content = '<img src="' . $embedDest . '" class="img-fluid mb-3">' . $content;
   }
 
   if (!empty($title) && !empty($content)) {
     $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $title)));
-    $stmt = $pdo->prepare("INSERT INTO articles (title, slug, content, author_id) VALUES (?, ?, ?, ?)");
-    $stmt->execute([$title, $slug, $content, $_SESSION['user_id']]);
+    $stmt = $pdo->prepare("INSERT INTO articles (title, slug, featured_image, content, author_id) VALUES (?, ?, ?, ?, ?)");
+    $stmt->execute([$title, $slug, $featuredImage, $content, $_SESSION['user_id']]);
     $success = true;
   } else {
     $errors[] = "Title and content are required.";
@@ -59,7 +71,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
     <div class="mb-3">
       <label for="content" class="form-label">Content</label>
-      <textarea name="content" id="content" rows="8" class="form-control" required></textarea>
+      <textarea name="content" id="content" rows="8" class="form-control"></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="featured_image" class="form-label">Featured Image</label>
+      <input type="file" name="featured_image" id="featured_image" class="form-control" accept="image/*">
+    </div>
+    <div class="mb-3">
+      <label for="image" class="form-label">Embedded Image</label>
+      <input type="file" name="image" id="image" class="form-control" accept="image/*">
     </div>
     <button type="submit" class="btn btn-primary">Publish</button>
   </form>
