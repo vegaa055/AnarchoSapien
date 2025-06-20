@@ -3,7 +3,7 @@ require_once 'db.php';
 session_start();
 include('header.php');
 
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['user_id'])) {   // Check if the user is logged in
   die("Unauthorized access.");
 }
 
@@ -11,8 +11,8 @@ $errors = [];
 $success = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $title = trim($_POST['title']);
-  $content = $_POST['content'];
+  $title = trim($_POST['title']); 
+  $content = $_POST['content'];   
   $featuredImage = null;
 
   // Featured image upload
@@ -32,6 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $featuredImage = $destPath;
     }
   }
+  
 
   // Optional: embed image in content
   if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
@@ -64,6 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
   <?php endforeach; ?>
 
+  <!-- Form for creating a new article -->
   <form method="POST" enctype="multipart/form-data">
     <div class="mb-3">
       <label for="title" class="form-label">Title</label>
