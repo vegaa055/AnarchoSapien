@@ -22,32 +22,65 @@ $success = false;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $title = trim($_POST['title']);
   $content = $_POST['content'];
-  $featuredImage = $article['featured_image']; // keep existing image unless replaced
+  $featuredImage = $article['featured_image'];
 
-  // If a new featured image is uploaded, replace it
+  $uploadDir = 'uploads/article_' . $article['id'] . '/';
+  if (!file_exists($uploadDir)) {
+    mkdir($uploadDir, 0755, true);
+  }
+
+  // Handle featured image replacement
   if (isset($_FILES['featured_image']) && $_FILES['featured_image']['error'] === UPLOAD_ERR_OK) {
-    $imageTmpPath = $_FILES['featured_image']['tmp_name'];
-    $imageName = basename($_FILES['featured_image']['name']);
-    $imageExt = pathinfo($imageName, PATHINFO_EXTENSION);
-    $safeName = uniqid() . '.' . strtolower($imageExt);
-    $uploadDir = 'uploads/';
+    $tmp = $_FILES['featured_image']['tmp_name'];
+    $ext = pathinfo($_FILES['featured_image']['name'], PATHINFO_EXTENSION);
+    $safeName = 'featured_' . uniqid() . '.' . strtolower($ext);
     $destPath = $uploadDir . $safeName;
 
-    if (!file_exists($uploadDir)) {
-      mkdir($uploadDir, 0755, true);
-    }
-
-    if (move_uploaded_file($imageTmpPath, $destPath)) {
+    if (move_uploaded_file($tmp, $destPath)) {
+      // Delete old featured image if it exists
+      if (!empty($featuredImage) && file_exists($featuredImage)) {
+        unlink($featuredImage);
+      }
       $featuredImage = $destPath;
+    }
+  }
+
+  // Handle optional embedded image upload
+  if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+    $tmp = $_FILES['image']['tmp_name'];
+    $ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+    $safeName = 'embed_' . uniqid() . '.' . strtolower($ext);
+    $embedPath = $uploadDir . $safeName;
+    if (move_uploaded_file($tmp, $embedPath)) {
+      $content = '<img src="' . $embedPath . '" class="img-fluid mb-3">' . $content;
+    }
+  }
+
+  // Clean up unused embedded images
+  $oldImages = [];
+  $newImages = [];
+
+  preg_match_all('/<img\s[^>]*src="([^"]+)"[^>]*>/i', $article['content'], $oldMatches);
+  preg_match_all('/<img\s[^>]*src="([^"]+)"[^>]*>/i', $content, $newMatches);
+
+  $oldImages = $oldMatches[1] ?? [];
+  $newImages = $newMatches[1] ?? [];
+
+  $unusedImages = array_diff($oldImages, $newImages);
+
+  foreach ($unusedImages as $imgPath) {
+    if (str_starts_with($imgPath, 'uploads/') && file_exists($imgPath)) {
+      unlink($imgPath);
     }
   }
 
   if (!empty($title) && !empty($content)) {
     $stmt = $pdo->prepare("UPDATE articles SET title = ?, content = ?, featured_image = ?, updated_at = NOW() WHERE id = ? AND author_id = ?");
     $stmt->execute([$title, $content, $featuredImage, $article['id'], $_SESSION['user_id']]);
+
     $success = true;
 
-    // Refresh article data
+    // Refresh article
     $stmt = $pdo->prepare("SELECT * FROM articles WHERE id = ?");
     $stmt->execute([$article['id']]);
     $article = $stmt->fetch();
@@ -56,6 +89,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 }
 ?>
+<script>
+  tinymce.init({
+    selector: '#content',
+    plugins: 'image link code lists fullscreen',
+    toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image | code fullscreen',
+    menubar: false,
+    branding: false,
+    height: 400,
+    automatic_uploads: true,
+    images_upload_url: 'upload_image.php?article_id=<?= $article["id"] ?>',
+    images_upload_credentials: true,
+    setup: function(editor) {
+      editor.on('change', function() {
+        editor.save();
+      });
+    }
+  });
+</script>
 
 <div class="container mt-5">
   <h2>Edit Article</h2>
@@ -88,6 +139,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="mb-3">
       <label for="featured_image" class="form-label">Replace Featured Image</label>
       <input type="file" name="featured_image" id="featured_image" class="form-control" accept="image/*">
+    </div>
+
+    <div class="mb-3">
+      <label for="image" class="form-label">Embed New Image (Optional)</label>
+      <input type="file" name="image" id="image" class="form-control" accept="image/*">
     </div>
 
     <button type="submit" class="btn btn-primary">Update Article</button>

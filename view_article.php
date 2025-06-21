@@ -27,7 +27,7 @@ include('header.php');
     <?php endif; ?>
 
     <hr>
-    <div class="mt-4">
+    <div class="mt-4 article-content">
       <?= $article['content'] ?> <!-- allows HTML like <img> to render -->
     </div>
 

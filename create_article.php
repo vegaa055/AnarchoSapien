@@ -3,52 +3,78 @@ require_once 'db.php';
 session_start();
 include('header.php');
 
-if (!isset($_SESSION['user_id'])) {   // Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
   die("Unauthorized access.");
 }
 
 $errors = [];
 $success = false;
 
+?>
+
+<script>
+  tinymce.init({
+    selector: '#content',
+    plugins: 'image link code lists fullscreen',
+    toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image | code fullscreen',
+    menubar: false,
+    branding: false,
+    height: 400,
+    automatic_uploads: true,
+    images_upload_url: 'upload_image.php?draft=1',
+    images_upload_credentials: true,
+    setup: function(editor) {
+      editor.on('change', function() {
+        editor.save();
+      });
+    }
+  });
+</script>
+
+<?php
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $title = trim($_POST['title']); 
-  $content = $_POST['content'];   
+  $title = trim($_POST['title']);
+  $content = $_POST['content'];
   $featuredImage = null;
-
-  // Featured image upload
-  if (isset($_FILES['featured_image']) && $_FILES['featured_image']['error'] === UPLOAD_ERR_OK) {
-    $imageTmpPath = $_FILES['featured_image']['tmp_name'];
-    $imageName = basename($_FILES['featured_image']['name']);
-    $imageExt = pathinfo($imageName, PATHINFO_EXTENSION);
-    $safeName = uniqid() . '.' . strtolower($imageExt);
-    $uploadDir = 'uploads/';
-    $destPath = $uploadDir . $safeName;
-
-    if (!file_exists($uploadDir)) {
-      mkdir($uploadDir, 0755, true);
-    }
-
-    if (move_uploaded_file($imageTmpPath, $destPath)) {
-      $featuredImage = $destPath;
-    }
-  }
-  
-
-  // Optional: embed image in content
-  if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-    $embedTmpPath = $_FILES['image']['tmp_name'];
-    $embedName = basename($_FILES['image']['name']);
-    $embedExt = pathinfo($embedName, PATHINFO_EXTENSION);
-    $embedSafe = uniqid() . '.' . strtolower($embedExt);
-    $embedDest = 'uploads/' . $embedSafe;
-    move_uploaded_file($embedTmpPath, $embedDest);
-    $content = '<img src="' . $embedDest . '" class="img-fluid mb-3">' . $content;
-  }
 
   if (!empty($title) && !empty($content)) {
     $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $title)));
-    $stmt = $pdo->prepare("INSERT INTO articles (title, slug, featured_image, content, author_id) VALUES (?, ?, ?, ?, ?)");
-    $stmt->execute([$title, $slug, $featuredImage, $content, $_SESSION['user_id']]);
+    $stmt = $pdo->prepare("INSERT INTO articles (title, slug, content, author_id) VALUES (?, ?, ?, ?)");
+    $stmt->execute([$title, $slug, '', $_SESSION['user_id']]);
+    $articleId = $pdo->lastInsertId();
+
+    $draftDir = "uploads/draft_user_" . $_SESSION['user_id'] . "/";
+    $articleDir = "uploads/article_$articleId/";
+
+    if (!file_exists($articleDir)) {
+      mkdir($articleDir, 0755, true);
+    }
+
+    if (file_exists($draftDir)) {
+      $files = glob($draftDir . '*');
+      foreach ($files as $file) {
+        $dest = $articleDir . basename($file);
+        rename($file, $dest);
+        $content = str_replace($file, $dest, $content);
+      }
+      rmdir($draftDir);
+    }
+
+    if (isset($_FILES['featured_image']) && $_FILES['featured_image']['error'] === UPLOAD_ERR_OK) {
+      $tmp = $_FILES['featured_image']['tmp_name'];
+      $ext = pathinfo($_FILES['featured_image']['name'], PATHINFO_EXTENSION);
+      $safeName = 'featured_' . uniqid() . '.' . strtolower($ext);
+      $destPath = $articleDir . $safeName;
+
+      if (move_uploaded_file($tmp, $destPath)) {
+        $featuredImage = $destPath;
+      }
+    }
+
+    $stmt = $pdo->prepare("UPDATE articles SET content = ?, featured_image = ? WHERE id = ?");
+    $stmt->execute([$content, $featuredImage, $articleId]);
+
     $success = true;
   } else {
     $errors[] = "Title and content are required.";
@@ -65,20 +91,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
   <?php endforeach; ?>
 
-  <!-- Form for creating a new article -->
   <form method="POST" enctype="multipart/form-data">
     <div class="mb-3">
       <label for="title" class="form-label">Title</label>
       <input type="text" name="title" id="title" class="form-control" required>
     </div>
+
     <div class="mb-3">
       <label for="content" class="form-label">Content</label>
-      <textarea name="content" id="content" rows="8" class="form-control"></textarea>
+      <textarea name="content" id="content" rows="10" class="form-control" required></textarea>
     </div>
+
     <div class="mb-3">
-      <label for="featured_image" class="form-label">Featured Image</label>
+      <label for="featured_image" class="form-label">Featured Image (Optional)</label>
       <input type="file" name="featured_image" id="featured_image" class="form-control" accept="image/*">
     </div>
+
     <button type="submit" class="btn btn-primary">Publish</button>
   </form>
 </div>

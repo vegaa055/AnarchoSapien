@@ -13,19 +13,7 @@
     href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Special+Elite&display=swap"
     rel="stylesheet" />
   <script src="https://cdn.tiny.cloud/1/9081gw3enl4pnnjnkoat9hahsqxz8gm6ot9gd46m3zlamg02/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-  <script>
-    tinymce.init({
-      selector: '#content',
-      plugins: 'image link code lists fullscreen',
-      toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image | code fullscreen',
-      menubar: false,
-      branding: false,
-      height: 400,
-      automatic_uploads: true,
-      images_upload_url: 'upload_image.php',
-      images_upload_credentials: true
-    });
-  </script>
+
 
 </head>
 
