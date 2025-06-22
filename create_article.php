@@ -32,7 +32,6 @@ $success = false;
 </script>
 
 <?php
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $title = trim($_POST['title']);
   $content = $_POST['content'];
@@ -53,12 +52,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (file_exists($draftDir)) {
       $files = glob($draftDir . '*');
+      $usedImages = [];
+
+      preg_match_all('/<img\s[^>]*src="([^"]+)"[^>]*>/i', $content, $matches);
+      $usedImages = $matches[1] ?? [];
+
+      // Move images from draft to article directory
       foreach ($files as $file) {
-        $dest = $articleDir . basename($file);
-        rename($file, $dest);
-        $content = str_replace($file, $dest, $content);
+        $filename = basename($file);
+        $dest = $articleDir . $filename;
+
+        if (in_array($file, $usedImages)) { // if image is used in content 
+          rename($file, $dest);
+          $content = str_replace($file, $dest, $content); // update content with new path
+        } else {
+          unlink($file); // remove unused image
+        }
       }
-      rmdir($draftDir);
+      @rmdir($draftDir);
     }
 
     if (isset($_FILES['featured_image']) && $_FILES['featured_image']['error'] === UPLOAD_ERR_OK) {

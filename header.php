@@ -13,8 +13,6 @@
     href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Special+Elite&display=swap"
     rel="stylesheet" />
   <script src="https://cdn.tiny.cloud/1/9081gw3enl4pnnjnkoat9hahsqxz8gm6ot9gd46m3zlamg02/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-
-
 </head>
 
 <body>
@@ -87,7 +85,7 @@
   <div class="jumbotron cover">
     <div class="container">
       <h1 class="display-3">AnarchoSapien</h1>
-      <p class="lead">No Gods, No Masters, Only Freedom & Knowledge</p>
+      <p class="lead">No Gods, No Masters; Only Freedom & Knowledge</p>
     </div>
   </div>
   <!-- JUMBOTRON END -->

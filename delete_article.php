@@ -2,30 +2,36 @@
 require_once 'db.php';
 session_start();
 
-if (!isset($_SESSION['user_id'])) {
-  header("Location: login.php");
-  exit;
+if (!isset($_SESSION['user_id']) || !isset($_GET['id']) || !is_numeric($_GET['id'])) {
+  die("Unauthorized access.");
 }
 
-if (isset($_GET['id']) && is_numeric($_GET['id'])) {
-  $stmt = $pdo->prepare("SELECT author_id FROM articles WHERE id = ?");
-  $stmt->execute([$_GET['id']]);
-  $article = $stmt->fetch();
+$articleId = $_GET['id'];
 
-  if (!$article) {
-    die("Article not found.");
-  }
+// Verify ownership
+$stmt = $pdo->prepare("SELECT * FROM articles WHERE id = ? AND author_id = ?");
+$stmt->execute([$articleId, $_SESSION['user_id']]);
+$article = $stmt->fetch();
 
-  if ($article['author_id'] != $_SESSION['user_id']) {
-    die("Unauthorized deletion attempt.");
-  }
-
-  $delete = $pdo->prepare("DELETE FROM articles WHERE id = ?");
-  $delete->execute([$_GET['id']]);
-
-  header("Location: index.php");
-  exit;
-} else {
-  die("Invalid article ID.");
+if (!$article) {
+  die("Article not found or access denied.");
 }
-?>
+
+// Delete article from database
+$stmt = $pdo->prepare("DELETE FROM articles WHERE id = ? AND author_id = ?");
+$stmt->execute([$articleId, $_SESSION['user_id']]);
+
+// Delete associated images and directory
+$uploadDir = "uploads/article_" . $articleId . "/";
+if (file_exists($uploadDir) && is_dir($uploadDir)) {
+  $files = glob($uploadDir . '*');
+  foreach ($files as $file) {
+    if (is_file($file)) {
+      unlink($file);
+    }
+  }
+  rmdir($uploadDir);
+}
+
+header("Location: index.php");
+exit;

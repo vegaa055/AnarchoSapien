@@ -16,79 +16,8 @@ if (!$article) {
   die("Article not found or access denied.");
 }
 
-$errors = [];
-$success = false;
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $title = trim($_POST['title']);
-  $content = $_POST['content'];
-  $featuredImage = $article['featured_image'];
-
-  $uploadDir = 'uploads/article_' . $article['id'] . '/';
-  if (!file_exists($uploadDir)) {
-    mkdir($uploadDir, 0755, true);
-  }
-
-  // Handle featured image replacement
-  if (isset($_FILES['featured_image']) && $_FILES['featured_image']['error'] === UPLOAD_ERR_OK) {
-    $tmp = $_FILES['featured_image']['tmp_name'];
-    $ext = pathinfo($_FILES['featured_image']['name'], PATHINFO_EXTENSION);
-    $safeName = 'featured_' . uniqid() . '.' . strtolower($ext);
-    $destPath = $uploadDir . $safeName;
-
-    if (move_uploaded_file($tmp, $destPath)) {
-      // Delete old featured image if it exists
-      if (!empty($featuredImage) && file_exists($featuredImage)) {
-        unlink($featuredImage);
-      }
-      $featuredImage = $destPath;
-    }
-  }
-
-  // Handle optional embedded image upload
-  if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-    $tmp = $_FILES['image']['tmp_name'];
-    $ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-    $safeName = 'embed_' . uniqid() . '.' . strtolower($ext);
-    $embedPath = $uploadDir . $safeName;
-    if (move_uploaded_file($tmp, $embedPath)) {
-      $content = '<img src="' . $embedPath . '" class="img-fluid mb-3">' . $content;
-    }
-  }
-
-  // Clean up unused embedded images
-  $oldImages = [];
-  $newImages = [];
-
-  preg_match_all('/<img\s[^>]*src="([^"]+)"[^>]*>/i', $article['content'], $oldMatches);
-  preg_match_all('/<img\s[^>]*src="([^"]+)"[^>]*>/i', $content, $newMatches);
-
-  $oldImages = $oldMatches[1] ?? [];
-  $newImages = $newMatches[1] ?? [];
-
-  $unusedImages = array_diff($oldImages, $newImages);
-
-  foreach ($unusedImages as $imgPath) {
-    if (str_starts_with($imgPath, 'uploads/') && file_exists($imgPath)) {
-      unlink($imgPath);
-    }
-  }
-
-  if (!empty($title) && !empty($content)) {
-    $stmt = $pdo->prepare("UPDATE articles SET title = ?, content = ?, featured_image = ?, updated_at = NOW() WHERE id = ? AND author_id = ?");
-    $stmt->execute([$title, $content, $featuredImage, $article['id'], $_SESSION['user_id']]);
-
-    $success = true;
-
-    // Refresh article
-    $stmt = $pdo->prepare("SELECT * FROM articles WHERE id = ?");
-    $stmt->execute([$article['id']]);
-    $article = $stmt->fetch();
-  } else {
-    $errors[] = "Title and content are required.";
-  }
-}
 ?>
+
 <script>
   tinymce.init({
     selector: '#content',
@@ -107,6 +36,77 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
   });
 </script>
+
+<?php
+
+$errors = [];
+$success = false;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $title = trim($_POST['title']);
+  $content = $_POST['content'];
+  $featuredImage = $article['featured_image'];
+
+  $uploadDir = 'uploads/article_' . $article['id'] . '/';
+  if (!file_exists($uploadDir)) {
+    mkdir($uploadDir, 0755, true);
+  }
+
+  // Replace featured image
+  if (isset($_FILES['featured_image']) && $_FILES['featured_image']['error'] === UPLOAD_ERR_OK) {
+    $tmp = $_FILES['featured_image']['tmp_name'];
+    $ext = pathinfo($_FILES['featured_image']['name'], PATHINFO_EXTENSION);
+    $safeName = 'featured_' . uniqid() . '.' . strtolower($ext);
+    $destPath = $uploadDir . $safeName;
+
+    if (move_uploaded_file($tmp, $destPath)) {
+      if (!empty($featuredImage) && file_exists($featuredImage)) {
+        unlink($featuredImage);
+      }
+      $featuredImage = $destPath;
+    }
+  }
+
+  // Optional embedded image handling
+  if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+    $tmp = $_FILES['image']['tmp_name'];
+    $ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+    $safeName = 'embed_' . uniqid() . '.' . strtolower($ext);
+    $embedPath = $uploadDir . $safeName;
+    if (move_uploaded_file($tmp, $embedPath)) {
+      $content = '<img src="' . $embedPath . '" class="img-fluid mb-3">' . $content;
+    }
+  }
+
+  // Clean unused embedded images
+  preg_match_all('/<img\s[^>]*src="([^"]+)"[^>]*>/i', $article['content'], $oldMatches);
+  preg_match_all('/<img\s[^>]*src="([^"]+)"[^>]*>/i', $content, $newMatches);
+
+  $oldImages = $oldMatches[1] ?? [];
+  $newImages = $newMatches[1] ?? [];
+
+  $unusedImages = array_diff($oldImages, $newImages);
+  foreach ($unusedImages as $imgPath) {
+    if (str_starts_with($imgPath, 'uploads/') && file_exists($imgPath)) {
+      unlink($imgPath);
+    }
+  }
+
+  if (!empty($title) && !empty($content)) {
+    $stmt = $pdo->prepare("UPDATE articles SET title = ?, content = ?, featured_image = ?, updated_at = NOW() WHERE id = ? AND author_id = ?");
+    $stmt->execute([$title, $content, $featuredImage, $article['id'], $_SESSION['user_id']]);
+
+    $success = true;
+
+    // Refresh
+    $stmt = $pdo->prepare("SELECT * FROM articles WHERE id = ?");
+    $stmt->execute([$article['id']]);
+    $article = $stmt->fetch();
+  } else {
+    $errors[] = "Title and content are required.";
+  }
+}
+?>
 
 <div class="container mt-5">
   <h2>Edit Article</h2>
