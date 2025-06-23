@@ -50,7 +50,7 @@ include 'header.php';
     <h4>Leave a Comment</h4>
     <form method="POST" action="post_comment.php" class="mb-4">
       <input type="hidden" name="article_id" value="<?= $article['id'] ?>">
-      <?php if (!isset($_SESSION['user_id'])): ?>
+      <?php if (!isset($_SESSION['user_id'])): ?> <!-- If not logged in, ask for name -->
         <input type="text" name="name" class="form-control mb-2" placeholder="Your name" required>
       <?php endif; ?>
       <textarea name="content" rows="4" class="form-control mb-2" placeholder="Write something..." required></textarea>
@@ -87,25 +87,35 @@ include 'header.php';
     {
       if (!isset($tree)) return;
       foreach ($tree as $comment) {
-        $indent = min($level, $maxIndent) * 2;         // stops growing after 5 levels
-        echo '<div class="ms-' . $indent . ' mb-3">';
+        $indent = min($level, $maxIndent) * 2;  // 2 spaces per level, max 10 spaces
+        echo '<div class="ms-' . $indent . ' mb-3 mt-2">';
         echo '<strong>' . htmlspecialchars($comment['user_name'] ?? $comment['name']) . '</strong> ';
         echo '<small class="text-danger">' .
           date('F j, Y H:i', strtotime($comment['commented_at'])) .
           '</small>';
         echo '<p>' . nl2br(htmlspecialchars($comment['content'])) . '</p>';
 
-        /* include reply form partial  */
-        $articleId = htmlspecialchars($comment['article_id']); // for partial
+        // ✅ Show edit/delete buttons for comment owner or admin
+        if (
+          isset($_SESSION['user_id']) &&
+          ($_SESSION['user_id'] == $comment['user_id'] || ($_SESSION['user_is_admin'] ?? false))
+        ) {
+          echo '<div class="mb-1">';
+          echo '<a href="edit_comment.php?id=' . $comment['id'] . '" class="btn btn-sm link-danger text-decoration-none me-1">Edit</a>';
+          echo '<a href="delete_comment.php?id=' . $comment['id'] . '" class="btn btn-sm link-danger text-decoration-none" onclick="return confirm(\'Delete this comment?\');">Delete</a>';
+          echo '</div>';
+        }
+
+        $articleId = htmlspecialchars($comment['article_id']);
         include 'reply_form_partial.php';
 
-        /* recurse into children         */
         if (isset($byParent[$comment['id']])) {
           renderComments($byParent[$comment['id']], $byParent, $level + 1, $maxIndent);
         }
         echo '</div>';
       }
     }
+
 
     if (isset($byParent[null])) {
       renderComments($byParent[null], $byParent);
