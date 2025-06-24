@@ -21,25 +21,29 @@ include 'header.php';
 <div class="container mt-5">
   <?php if ($article): ?>
     <!-- Article header -->
-    <h1><?= htmlspecialchars($article['title']) ?></h1>
-    <p class="text-muted">
-      By <?= htmlspecialchars($article['user_name'] ?? 'Unknown') ?> •
-      <?= date('F j, Y', strtotime($article['created_at'])) ?>
-    </p>
 
+    <!-- Article Title -->
+    <h1 class="article-title-full"><?= htmlspecialchars($article['title']) ?></h1>
     <!-- Featured image -->
     <?php if (!empty($article['featured_image'])): ?>
       <img src="<?= $article['featured_image'] ?>" class="img-fluid mb-3 rounded" alt="featured image">
     <?php endif; ?>
+    <!-- Author and date -->
+    <p class="text-light author-date">
+      By <?= htmlspecialchars($article['user_name'] ?? 'Unknown') ?> • <!-- if no user_name, show 'Unknown' -->
+      <?= date('F j, Y', strtotime($article['created_at'])) ?>
+    </p>
 
     <!-- Edit / Delete buttons for author -->
     <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $article['author_id']): ?>
       <div class="mb-3">
-        <a href="edit_article.php?id=<?= $article['id'] ?>" class="btn btn-sm btn-outline-primary">Edit</a>
-        <a href="delete_article.php?id=<?= $article['id'] ?>" class="btn btn-sm btn-outline-danger"
+        <a href="edit_article.php?id=<?= $article['id'] ?>" class="btn btn-md link-primary">Edit</a>
+        <a href="delete_article.php?id=<?= $article['id'] ?>" class="btn btn-md link-danger"
           onclick="return confirm('Delete this article?');">Delete</a>
       </div>
     <?php endif; ?>
+
+    <hr class="red-line"> <!-- New red line -->
 
     <!-- Article content -->
     <div class="mb-5">

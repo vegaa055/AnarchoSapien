@@ -121,6 +121,10 @@ body {
   font-size: 1.2rem;
 }
 
+hr.red-line {
+  border-top: 2px solid red;
+}
+
 .article-content p {
   font-family: "Calibri", sans-serif;
   color: #f8f9fa;
@@ -147,6 +151,18 @@ body {
   font-family: "Pirata One", cursive;
   font-size: 2rem;
   color: #d62828;
+}
+
+.article-title-full {
+  font-family: "Special Elite", monospace;
+  font-size: 2.5rem;
+  color: #ffffff;
+}
+
+.author-date {
+  font-family: "Special Elite", monospace;
+  color: #adb5bd;
+  font-size: 1.2rem;
 }
 
 footer {
