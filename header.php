@@ -1,3 +1,16 @@
+<?php
+require_once 'db.php';
+// session_start();
+$userProfilePic = 'images/default.png';
+if (isset($_SESSION['user_id'])) {
+  $stmt = $pdo->prepare("SELECT profile_picture FROM users WHERE id = ?");
+  $stmt->execute([$_SESSION['user_id']]);
+  $result = $stmt->fetch();
+  if ($result && $result['profile_picture']) {
+    $userProfilePic = $result['profile_picture'];
+  }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -69,6 +82,9 @@
         </ul>
         <div class="d-flex">
           <?php if (isset($_SESSION['user_name'])): ?>
+            <a href="profile.php?id=<?= $_SESSION['user_id'] ?>">
+              <img src="<?= htmlspecialchars($userProfilePic) ?>" class="rounded-circle" alt="Profile" style="padding:4px; width: 36px; height: 36px; object-fit: cover;">
+            </a>
             <span class="navbar-text me-3 welcome-user">Welcome, <?= htmlspecialchars($_SESSION['user_name']) ?>!</span>
             <a href="logout.php" class="btn btn-outline-danger">Logout</a>
           <?php else: ?>
