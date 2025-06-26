@@ -83,7 +83,7 @@ if (isset($_SESSION['user_id'])) {
         <div class="d-flex">
           <?php if (isset($_SESSION['user_name'])): ?>
             <a href="profile.php?id=<?= $_SESSION['user_id'] ?>">
-              <img src="<?= htmlspecialchars($userProfilePic) ?>" class="rounded-circle" alt="Profile" style="padding:4px; width: 36px; height: 36px; object-fit: cover;">
+              <img src="<?= htmlspecialchars($userProfilePic) ?>" class="rounded-circle pfp-thumbnail" alt="Profile" style="margin-right:8px; width: 35px; height: 35px; object-fit: cover;">
             </a>
             <span class="navbar-text me-3 welcome-user">Welcome, <?= htmlspecialchars($_SESSION['user_name']) ?>!</span>
             <a href="logout.php" class="btn btn-outline-danger">Logout</a>

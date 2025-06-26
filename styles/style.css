@@ -165,6 +165,18 @@ hr.red-line {
   font-size: 1.2rem;
 }
 
+
+/* pfp-thumbnail hover */
+.pfp-thumbnail:hover {
+  transform: scale(1.1);
+  transition: transform 0.3s ease;
+}
+
+.welcome-user {
+  justify-content: center;
+  margin: auto;
+}
+
 footer {
   margin-top: 2rem;
   padding: 1rem;
