@@ -1,8 +1,9 @@
 <?php
-require_once 'db.php';
+// load configuration and database connection
+require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/../includes/db.php';
+include __DIR__ . '/../includes/header.php';
 session_start();
-include('header.php');
-
 if (!isset($_SESSION['user_id'])) {
   die("Unauthorized access.");
 }
@@ -21,7 +22,8 @@ $success = false;
     branding: false,
     height: 400,
     automatic_uploads: true,
-    images_upload_url: 'upload_image.php?draft=1',
+    images_upload_url: '../users/upload_image.php?draft=1',
+
     images_upload_credentials: true,
     setup: function(editor) {
       editor.on('change', function() {
@@ -30,7 +32,7 @@ $success = false;
     }
   });
 </script>
-
+<link rel="stylesheet" href="<?= BASE_URL ?>../styles/style.css" />
 <?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $title = trim($_POST['title']);
@@ -122,4 +124,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </form>
 </div>
 
-<?php include('footer.php'); ?>
+<?php include('../includes/footer.php'); ?>

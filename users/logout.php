@@ -7,6 +7,5 @@ session_unset();
 session_destroy();
 
 // Redirect to home page or login
-header("Location: index.php");
+header("Location: /anarchosapien/index.php");
 exit;
-?>

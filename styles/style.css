@@ -172,10 +172,41 @@ hr.red-line {
   transition: transform 0.3s ease;
 }
 
+.profile-title {
+  font-family: "Pirata One", cursive;
+  color: #d62828;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
 .welcome-user {
   justify-content: center;
   margin: auto;
 }
+
+.likes-text {
+  font-family: "Special Elite", monospace;
+  color: #d62828;
+  text-shadow: #200404 1px 1px 2px;
+}
+
+.like-btn {
+  font-family: "Special Elite", monospace;
+
+}
+
+.comment {
+  background-color: #2c2c2c;
+  border: 1px solid #444;
+  padding: 10px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.comment:hover {
+  background-color: #3a3a3a;
+}
+
 
 footer {
   margin-top: 2rem;

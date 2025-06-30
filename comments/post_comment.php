@@ -1,5 +1,6 @@
 <?php
-require_once 'db.php';
+require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/../includes/db.php';
 session_start();
 
 if (
@@ -11,9 +12,8 @@ if (
   $content    = trim($_POST['content']);
 
   // parent_id = NULL for top-level, or the integer supplied
-  $parent_id  = (isset($_POST['parent_id']) && $_POST['parent_id'] !== '')
-    ? (int) $_POST['parent_id']
-    : null;
+  $parent_id = isset($_POST['parent_id']) && is_numeric($_POST['parent_id']) ? (int) $_POST['parent_id'] : null;
+
 
   $user_id = $_SESSION['user_id'] ?? null;          // null = guest
   $name    = $user_id ? null : trim($_POST['name']); // guests supply a name
@@ -26,5 +26,5 @@ if (
   }
 }
 
-header("Location: view_article.php?id=" . $_POST['article_id']);
+header("Location: /anarchosapien/articles/view.php?id=" . $_POST['article_id']);
 exit;

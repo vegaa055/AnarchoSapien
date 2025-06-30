@@ -1,5 +1,6 @@
 <?php
-require_once 'db.php';
+require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/../includes/db.php';
 session_start();
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) die("Missing ID");
@@ -24,5 +25,5 @@ if (
 $stmt = $pdo->prepare("DELETE FROM comments WHERE id = ?");
 $stmt->execute([$comment_id]);
 
-header("Location: view_article.php?id=" . $comment['article_id']);
+header("Location: /anarchosapien/articles/view.php?id=" . $comment['article_id']);
 exit;

@@ -1,5 +1,8 @@
 <?php
-require_once 'db.php';
+// load configuration and database connection
+require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/header.php';
 session_start();
 
 if (!isset($_SESSION['user_id'])) die("Unauthorized");
@@ -9,12 +12,14 @@ $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch();
 
+/* ── Check if user exists ──────────────────── */
 if (!$user) die("User not found");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $bio = trim($_POST['bio']);
   $profile_picture = $user['profile_picture'];
 
+  /* ── Handle profile picture upload ───────────────── */
   if (!empty($_POST['cropped_image'])) {
     $data = $_POST['cropped_image'];
     if (preg_match('/^data:image\/png;base64,/', $data)) {
@@ -28,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $path = $uploadDir . $filename;
 
       if (file_put_contents($path, $data)) {
-        if ($profile_picture && file_exists($profile_picture) && $profile_picture !== 'images/default.png') {
+        if ($profile_picture && file_exists($profile_picture) && $profile_picture !== '../images/default.png') {
           unlink($profile_picture);
         }
         $profile_picture = $path;
@@ -43,12 +48,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   exit;
 }
 
-include 'header.php';
 ?>
 
-<!-- Cropper.js CSS -->
+<!-- ── Cropper.js CSS ───────────────── -->
 <link href="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.css" rel="stylesheet" />
-
+<link rel="stylesheet" href="<?= BASE_URL ?>../styles/style.css" />
 <div class="container mt-5" style="max-width: 600px;">
   <h3>Edit Profile</h3>
   <form method="POST" enctype="multipart/form-data">
@@ -68,7 +72,7 @@ include 'header.php';
 
 
 </div>
-<!-- Modal for cropping -->
+<!-- ── Modal for cropping ───────────────── -->
 <div class="modal fade" id="cropModal" tabindex="-1" aria-labelledby="cropModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
@@ -85,7 +89,7 @@ include 'header.php';
     </div>
   </div>
 </div>
-<!-- Cropper.js JS -->
+<!-- ── Cropper.js JS ───────────────── -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.js"></script>
 <script>
@@ -129,4 +133,4 @@ include 'header.php';
   });
 </script>
 
-<?php include 'footer.php'; ?>
+<?php include __DIR__ . '/../includes/footer.php'; ?>

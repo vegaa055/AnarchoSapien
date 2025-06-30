@@ -6,7 +6,7 @@
 </a>
 
 <div id="reply-<?= $comment['id'] ?>" class="d-none mt-2">
-  <form method="POST" action="post_comment.php">
+  <form method="POST" action="/anarchosapien/comments/post_comment.php">
     <input type="hidden" name="article_id" value="<?= $articleId ?>">
     <input type="hidden" name="parent_id" value="<?= $comment['id'] ?>">
     <?php if (!isset($_SESSION['user_id'])): ?>

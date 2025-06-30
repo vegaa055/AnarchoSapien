@@ -1,8 +1,8 @@
 <?php
-require_once 'db.php';
+require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/../includes/db.php';
+include __DIR__ . '/../includes/header.php';
 session_start();
-include('header.php');
-
 if (!isset($_SESSION['user_id']) || !isset($_GET['id']) || !is_numeric($_GET['id'])) {
   die("Unauthorized access.");
 }
@@ -17,7 +17,7 @@ if (!$article) {
 }
 
 ?>
-
+<link rel="stylesheet" href="<?= BASE_URL ?>../styles/style.css" />
 <script>
   tinymce.init({
     selector: '#content',
@@ -27,7 +27,7 @@ if (!$article) {
     branding: false,
     height: 400,
     automatic_uploads: true,
-    images_upload_url: 'upload_image.php?article_id=<?= $article["id"] ?>',
+    images_upload_url: '/anarchosapien/users/upload_image.php?article_id=<?= $article["id"] ?>',
     images_upload_credentials: true,
     setup: function(editor) {
       editor.on('change', function() {
@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php if (!empty($article['featured_image'])): ?>
       <div class="mb-3">
         <label class="form-label">Current Featured Image:</label><br>
-        <img src="<?= $article['featured_image'] ?>" alt="Featured Image" class="img-fluid rounded mb-2" style="max-width: 300px;">
+        <img src="../<?= $article['featured_image'] ?>" alt="Featured Image" class="img-fluid rounded mb-2" style="max-width: 300px;">
       </div>
     <?php endif; ?>
 
@@ -150,4 +150,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </form>
 </div>
 
-<?php include('footer.php'); ?>
+<?php include('../includes/footer.php'); ?>

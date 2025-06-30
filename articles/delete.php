@@ -1,5 +1,7 @@
 <?php
-require_once 'db.php';
+require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/../includes/db.php';
 session_start();
 
 if (!isset($_SESSION['user_id']) || !isset($_GET['id']) || !is_numeric($_GET['id'])) {
@@ -33,5 +35,5 @@ if (file_exists($uploadDir) && is_dir($uploadDir)) {
   rmdir($uploadDir);
 }
 
-header("Location: index.php");
+header("Location: /anarchosapien/index.php");
 exit;
