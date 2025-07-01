@@ -59,7 +59,7 @@ if (isset($_SESSION['user_id'])) {
             <a class="nav-link" href="/anarchosapien/index.php">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">About</a>
+            <a class="nav-link" href="/anarchosapien/about/about.php">About</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" aria-current="page" href="#">Forum</a>

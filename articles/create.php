@@ -1,16 +1,16 @@
 <?php
+session_start();
 // load configuration and database connection
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/db.php';
-include __DIR__ . '/../includes/header.php';
-session_start();
+
+
 if (!isset($_SESSION['user_id'])) {
   die("Unauthorized access.");
 }
 
 $errors = [];
 $success = false;
-
 ?>
 
 <script>
@@ -32,7 +32,9 @@ $success = false;
     }
   });
 </script>
-<link rel="stylesheet" href="<?= BASE_URL ?>../styles/style.css" />
+
+<?php include __DIR__ . '/../includes/header.php'; ?>
+
 <?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $title = trim($_POST['title']);
@@ -95,6 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
+<link rel="stylesheet" href="<?= BASE_URL ?>../styles/style.css" />
 <div class="container mt-5">
   <h2>Create New Article</h2>
   <?php if ($success): ?>

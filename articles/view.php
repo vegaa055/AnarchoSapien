@@ -2,7 +2,7 @@
 session_start();
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/db.php';
-include __DIR__ . '/../includes/header.php';
+
 include __DIR__ . '/../includes/render_comments.php';
 
 /* ── 1. Get the article ─────────────────────────────── */
@@ -17,7 +17,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
   $stmt->execute([$_GET['id']]);
   $article = $stmt->fetch();
 }
-
+include __DIR__ . '/../includes/header.php';
 ?>
 
 <link rel="stylesheet" href="<?= BASE_URL ?>../styles/style.css" />

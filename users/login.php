@@ -1,8 +1,7 @@
 <?php
-
-require_once __DIR__ . '/../includes/db.php';
-include __DIR__ . '/../includes/header.php';
 session_start();
+require_once __DIR__ . '/../includes/db.php';
+
 
 $errors = [];
 
@@ -30,6 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
   }
 }
+
+include __DIR__ . '/../includes/header.php';
+
 ?>
 
 <link rel="stylesheet" href="<?= BASE_URL ?>../styles/style.css" />
