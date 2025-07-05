@@ -1,6 +1,9 @@
 <?php
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/db.php';
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
+}
 // session_start(); should we start session here since it's in index.php and other php files? 
 $userProfilePic = 'images/default.png';
 if (isset($_SESSION['user_id'])) {
@@ -79,15 +82,29 @@ if (isset($_SESSION['user_id'])) {
             </a>
 
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">Philosophy</a></li>
-              <li><a class="dropdown-item" href="#">Technology</a></li>
-              <li><a class="dropdown-item" href="#">History</a></li>
-              <li><a class="dropdown-item" href="#">Paranormal</a></li>
+              <?php
+              $tagStmt = $pdo->query("
+                  SELECT t.name, COUNT(at.article_id) AS usage_count
+                  FROM tags t
+                  LEFT JOIN article_tags at ON t.id = at.tag_id
+                  GROUP BY t.id
+                  ORDER BY usage_count DESC, t.name ASC
+                  LIMIT 5
+                ");
+              while ($tag = $tagStmt->fetch()):
+              ?>
+                <li>
+                  <a class="dropdown-item" href="/anarchosapien/tags/tag.php?name=<?= urlencode($tag['name']) ?>">
+                    <?= htmlspecialchars(ucfirst($tag['name'])) ?>
+                  </a>
+                </li>
+              <?php endwhile; ?>
               <li>
                 <hr class="dropdown-divider" />
               </li>
-              <li><a class="dropdown-item" href="#">All Articles</a></li>
+              <li><a class="dropdown-item" href="<?= BASE_URL ?>all_tags.php">All Tags</a></li>
             </ul>
+
           </li>
         </ul>
 

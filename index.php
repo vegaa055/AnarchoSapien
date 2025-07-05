@@ -10,6 +10,7 @@ include __DIR__ . '/includes/header.php';
     <div class="row">
       <div class="col-sm-8 featured-article m-2">
         <h2>Featured Article</h2>
+        <hr class="text-danger">
         <?php
         $featured = $pdo->query("SELECT id, title, content, featured_image, created_at FROM articles ORDER BY created_at DESC LIMIT 1")->fetch();
         if ($featured):
@@ -28,19 +29,23 @@ include __DIR__ . '/includes/header.php';
           <?php endif; ?>
           <hr>
           <p><?= substr(strip_tags($featured['content']), 0, 300) . '...' ?></p>
-          <a href="<?= BASE_URL ?>articles/view.php?id=<?= $featured['id'] ?>" class="btn btn-outline-success">Read More</a>
+          <a href="<?= BASE_URL ?>articles/view.php?id=<?= $featured['id'] ?>" class="btn btn-outline-danger">Read More</a>
         <?php else: ?>
           <p>No featured article found.</p>
         <?php endif; ?>
       </div>
       <div class="article-list col-sm-4 m-2">
         <h3>Recent Posts</h3>
+        <hr class="text-danger">
         <ul>
           <?php
-          $stmt = $pdo->query("SELECT id, title FROM articles ORDER BY created_at DESC LIMIT 10 OFFSET 1");
+          $stmt = $pdo->query("SELECT id, title, created_at FROM articles ORDER BY created_at DESC LIMIT 10 OFFSET 1");
           while ($row = $stmt->fetch()):
           ?>
-            <li><a href="<?= BASE_URL ?>articles/view.php?id=<?= $row['id'] ?>"><?= htmlspecialchars($row['title']) ?></a></li>
+            <li><a href="<?= BASE_URL ?>articles/view.php?id=<?= $row['id'] ?>"><?= htmlspecialchars($row['title']) ?>
+              </a>
+              <small class="text-secondary">| <?= date("F j, Y", strtotime($row['created_at'])) ?></small>
+            </li>
           <?php endwhile; ?>
         </ul>
       </div>

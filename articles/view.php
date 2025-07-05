@@ -88,6 +88,7 @@ include __DIR__ . '/../includes/header.php';
     <div class="mb-5">
       <?= $article['content'] /* already safe/escaped when inserted */ ?>
     </div>
+    <?php include __DIR__ . '/../includes/display_tags_partial.php'; ?>
 
     <!-- ── Comment form (top-level) ──────────────────── -->
     <h4>Leave a Comment</h4>
@@ -224,7 +225,6 @@ include __DIR__ . '/../includes/header.php';
     });
   });
 </script>
-
 
 
 <?php include __DIR__ . '/../includes/footer.php'; ?>

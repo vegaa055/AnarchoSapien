@@ -16,7 +16,7 @@ include '../includes/header.php';
 ?>
 <link rel="stylesheet" href="<?= BASE_URL ?>../styles/style.css" />
 <div class="container mt-5 text-center">
-  <h2 class="profile-title"><?= htmlspecialchars($user['user_name']) ?>'s Profile</h2>
+  <h2 class="profile-title"><?= htmlspecialchars($user['user_name']) ?></h2>
   <img src="/anarchosapien/users/<?= $user['profile_picture'] ?: 'images/default.png' ?>" class="rounded-circle my-3" style="width: 150px; height: 150px; object-fit: cover;">
   <!-- Link to edit_profile.php -->
   <div class="mb-3">
@@ -26,6 +26,7 @@ include '../includes/header.php';
 
     <div class="text-start mx-auto" style="max-width: 600px;">
       <h5>About</h5>
+      <hr class="text-danger" style="width: 50%; margin: 0; margin-top: 10px; margin-bottom: 20px;">
       <p><?= nl2br(htmlspecialchars($user['bio'])) ?: '<span class="text-muted">No bio available.</span>' ?></p>
     </div>
   </div>

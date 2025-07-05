@@ -12,7 +12,7 @@ if (!isset($_SESSION['user_id'])) {
 $errors = [];
 $success = false;
 ?>
-
+<?php include __DIR__ . '/../includes/header.php'; ?>
 <script>
   tinymce.init({
     selector: '#content',
@@ -33,7 +33,7 @@ $success = false;
   });
 </script>
 
-<?php include __DIR__ . '/../includes/header.php'; ?>
+
 
 <?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -76,6 +76,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       @rmdir($draftDir);
     }
 
+
+
+
     if (isset($_FILES['featured_image']) && $_FILES['featured_image']['error'] === UPLOAD_ERR_OK) {
       $tmp = $_FILES['featured_image']['tmp_name'];
       $ext = pathinfo($_FILES['featured_image']['name'], PATHINFO_EXTENSION);
@@ -89,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmt = $pdo->prepare("UPDATE articles SET content = ?, featured_image = ? WHERE id = ?");
     $stmt->execute([$content, $featuredImage, $articleId]);
-
+    include __DIR__ . '/../includes/save_tags_partial.php';
     $success = true;
   } else {
     $errors[] = "Title and content are required.";
@@ -99,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <link rel="stylesheet" href="<?= BASE_URL ?>../styles/style.css" />
 <div class="container mt-5">
-  <h2>Create New Article</h2>
+  <h2 class="section-title">Create New Article</h2>
   <?php if ($success): ?>
     <div class="alert alert-success">Article posted successfully.</div>
   <?php endif; ?>
@@ -122,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <label for="featured_image" class="form-label">Featured Image (Optional)</label>
       <input type="file" name="featured_image" id="featured_image" class="form-control" accept="image/*">
     </div>
-
+    <?php include __DIR__ . '/../includes/tag_selector_partial.php'; ?>
     <button type="submit" class="btn btn-primary">Publish</button>
   </form>
 </div>

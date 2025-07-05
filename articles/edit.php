@@ -1,13 +1,11 @@
 <?php
-require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/db.php';
-include __DIR__ . '/../includes/header.php';
 session_start();
+
 if (!isset($_SESSION['user_id']) || !isset($_GET['id']) || !is_numeric($_GET['id'])) {
   die("Unauthorized access.");
 }
 
-// Fetch article
 $stmt = $pdo->prepare("SELECT * FROM articles WHERE id = ? AND author_id = ?");
 $stmt->execute([$_GET['id'], $_SESSION['user_id']]);
 $article = $stmt->fetch();
@@ -16,43 +14,27 @@ if (!$article) {
   die("Article not found or access denied.");
 }
 
-?>
-<link rel="stylesheet" href="<?= BASE_URL ?>../styles/style.css" />
-<script>
-  tinymce.init({
-    selector: '#content',
-    plugins: 'image link code lists fullscreen',
-    toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image | code fullscreen',
-    menubar: false,
-    branding: false,
-    height: 400,
-    automatic_uploads: true,
-    images_upload_url: '/anarchosapien/users/upload_image.php?article_id=<?= $article["id"] ?>',
-    images_upload_credentials: true,
-    setup: function(editor) {
-      editor.on('change', function() {
-        editor.save();
-      });
-    }
-  });
-</script>
-
-<?php
+$articleId = $article['id']; // assign for tag saving
 
 $errors = [];
 $success = false;
+
+// Fetch selected tag IDs
+$tagQuery = $pdo->prepare("SELECT tag_id FROM article_tags WHERE article_id = ?");
+$tagQuery->execute([$articleId]);
+$selectedTags = array_column($tagQuery->fetchAll(), 'tag_id');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $title = trim($_POST['title']);
   $content = $_POST['content'];
   $featuredImage = $article['featured_image'];
 
-  $uploadDir = 'uploads/article_' . $article['id'] . '/';
+  $uploadDir = '../uploads/article_' . $article['id'] . '/';
   if (!file_exists($uploadDir)) {
     mkdir($uploadDir, 0755, true);
   }
 
-  // Replace featured image
+  // Handle featured image
   if (isset($_FILES['featured_image']) && $_FILES['featured_image']['error'] === UPLOAD_ERR_OK) {
     $tmp = $_FILES['featured_image']['tmp_name'];
     $ext = pathinfo($_FILES['featured_image']['name'], PATHINFO_EXTENSION);
@@ -60,54 +42,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $destPath = $uploadDir . $safeName;
 
     if (move_uploaded_file($tmp, $destPath)) {
-      if (!empty($featuredImage) && file_exists($featuredImage)) {
-        unlink($featuredImage);
+      if (!empty($featuredImage) && file_exists('../' . $featuredImage)) {
+        unlink('../' . $featuredImage);
       }
-      $featuredImage = $destPath;
+      $featuredImage = 'uploads/article_' . $article['id'] . '/' . $safeName;
     }
   }
 
-  // Optional embedded image handling
+  // Embedded images
   if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
     $tmp = $_FILES['image']['tmp_name'];
     $ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
     $safeName = 'embed_' . uniqid() . '.' . strtolower($ext);
     $embedPath = $uploadDir . $safeName;
     if (move_uploaded_file($tmp, $embedPath)) {
-      $content = '<img src="' . $embedPath . '" class="img-fluid mb-3">' . $content;
+      $content = '<img src="../' . $embedPath . '" class="img-fluid mb-3">' . $content;
     }
   }
 
-  // Clean unused embedded images
-  preg_match_all('/<img\s[^>]*src="([^"]+)"[^>]*>/i', $article['content'], $oldMatches);
-  preg_match_all('/<img\s[^>]*src="([^"]+)"[^>]*>/i', $content, $newMatches);
-
-  $oldImages = $oldMatches[1] ?? [];
-  $newImages = $newMatches[1] ?? [];
-
-  $unusedImages = array_diff($oldImages, $newImages);
-  foreach ($unusedImages as $imgPath) {
-    if (str_starts_with($imgPath, 'uploads/') && file_exists($imgPath)) {
-      unlink($imgPath);
-    }
-  }
-
+  // Update article
   if (!empty($title) && !empty($content)) {
     $stmt = $pdo->prepare("UPDATE articles SET title = ?, content = ?, featured_image = ?, updated_at = NOW() WHERE id = ? AND author_id = ?");
     $stmt->execute([$title, $content, $featuredImage, $article['id'], $_SESSION['user_id']]);
 
+    include __DIR__ . '/../includes/save_tags_partial.php';
+
     $success = true;
 
-    // Refresh
     $stmt = $pdo->prepare("SELECT * FROM articles WHERE id = ?");
     $stmt->execute([$article['id']]);
     $article = $stmt->fetch();
+
+    $tagQuery->execute([$articleId]);
+    $selectedTags = array_column($tagQuery->fetchAll(), 'tag_id');
   } else {
     $errors[] = "Title and content are required.";
   }
 }
-?>
 
+include __DIR__ . '/../includes/header.php';
+?>
+<link rel="stylesheet" href="<?= BASE_URL ?>../styles/style.css" />
 <div class="container mt-5">
   <h2>Edit Article</h2>
 
@@ -141,13 +116,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <input type="file" name="featured_image" id="featured_image" class="form-control" accept="image/*">
     </div>
 
-    <div class="mb-3">
-      <label for="image" class="form-label">Embed New Image (Optional)</label>
-      <input type="file" name="image" id="image" class="form-control" accept="image/*">
-    </div>
+    <?php include __DIR__ . '/../includes/tag_selector_partial.php'; ?>
 
     <button type="submit" class="btn btn-primary">Update Article</button>
   </form>
 </div>
 
-<?php include('../includes/footer.php'); ?>
+<?php include __DIR__ . '/../includes/footer.php'; ?>

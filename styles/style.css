@@ -19,6 +19,7 @@ body {
 
 .cover {
   background-image: url("https://cdn.midjourney.com/e0bd43db-a674-4c34-a2c2-ae8be4fed103/0_2.png");
+  background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
 }
@@ -41,6 +42,7 @@ body {
 .nav-link {
   color: #f8f9fa !important;
   font-family: "Special Elite", monospace;
+  font-size: 1.1rem;
 }
 
 .navbar-brand:hover,
@@ -91,6 +93,8 @@ body {
 }
 
 .article-list ul {
+  font-family: "Special Elite", monospace;
+  font-size: 1.1rem;
   list-style: none;
   padding-left: 0;
 }
@@ -182,6 +186,7 @@ hr.red-line {
 .welcome-user {
   justify-content: center;
   margin: auto;
+  font-size: 1.1rem;
 }
 
 .likes-text {
@@ -207,13 +212,27 @@ hr.red-line {
   background-color: #3a3a3a;
 }
 
-.about-title {
+.section-title {
   font-family: "Pirata One", cursive;
   color: #d62828;
   font-size: 2.5rem;
   margin-bottom: 1rem;
 }
 
+.section-title:hover {
+  color: #770e0e;
+}
+
+.section-title-2 {
+  font-family: "Pirata One", cursive;
+  color: #d62828;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.section-title-3 {
+  font-family: "Special Elite", monospace;
+}
 .about-content {
   font-family: "Special Elite", monospace;
   color: #f8f9fa;
@@ -221,6 +240,39 @@ hr.red-line {
   font-size: 1.1rem;
 }
 
+.tag-list-item {
+  background-color: #1e1e1e;
+  font-family: "Special Elite", monospace;
+  font-size: 1.2rem;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.tag-list-item a {
+  text-decoration: none;
+  color: #d62828;
+}
+
+.tag-list-item a:hover {
+  color: #770e0e;
+}
+
+.tagged-article-preview {
+  font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  color: #adb5bd;
+  font-size: 1rem;
+  margin-top: 0.5rem;
+}
+
+
+.mission-section {
+  background-color: #1f1f1f;
+  padding: 2rem;
+  border-radius: 8px;
+  margin-top: 2rem;
+  width: 100%;
+}
 footer {
   margin-top: 2rem;
   padding: 1rem;
