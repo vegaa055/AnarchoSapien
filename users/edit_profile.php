@@ -2,7 +2,7 @@
 // load configuration and database connection
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/header.php';
+
 session_start();
 
 if (!isset($_SESSION['user_id'])) die("Unauthorized");
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   header("Location: profile.php?id=$user_id");
   exit;
 }
-
+require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <!-- ── Cropper.js CSS ───────────────── -->

@@ -44,7 +44,7 @@ include __DIR__ . '/includes/header.php';
           ?>
             <li><a href="<?= BASE_URL ?>articles/view.php?id=<?= $row['id'] ?>"><?= htmlspecialchars($row['title']) ?>
               </a>
-              <small class="text-secondary">| <?= date("F j, Y", strtotime($row['created_at'])) ?></small>
+              <small class="text-secondary float-end"><?= date("F j, Y", strtotime($row['created_at'])) ?></small>
             </li>
           <?php endwhile; ?>
         </ul>

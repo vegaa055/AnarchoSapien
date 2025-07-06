@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $content = $_POST['content'];
   $featuredImage = $article['featured_image'];
 
-  $uploadDir = '../uploads/article_' . $article['id'] . '/';
+  $uploadDir = '../articles/uploads/article_' . $article['id'] . '/';
   if (!file_exists($uploadDir)) {
     mkdir($uploadDir, 0755, true);
   }
@@ -107,7 +107,7 @@ include __DIR__ . '/../includes/header.php';
     <?php if (!empty($article['featured_image'])): ?>
       <div class="mb-3">
         <label class="form-label">Current Featured Image:</label><br>
-        <img src="../<?= $article['featured_image'] ?>" alt="Featured Image" class="img-fluid rounded mb-2" style="max-width: 300px;">
+        <img src="/anarchosapien/articles/<?= $article['featured_image'] ?>" alt="Featured Image" class="img-fluid rounded mb-2" style="max-width: 300px;">
       </div>
     <?php endif; ?>
 

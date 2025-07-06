@@ -37,7 +37,7 @@ $articleId = isset($_GET['article_id']) && is_numeric($_GET['article_id'])
 // Decide relative upload directory
 if ($articleId > 0) {
   // Existing article
-  $relativeDir = 'uploads/article_' . $articleId . '/';
+  $relativeDir = '/anarchosapien/articles/uploads/article_' . $articleId . '/';
 } else {
   // Draft for this user
   $relativeDir = 'uploads/drafts/user_' . $_SESSION['user_id'] . '/';
