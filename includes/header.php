@@ -5,7 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
 // session_start(); should we start session here since it's in index.php and other php files? 
-$userProfilePic = 'images/default.png';
+$userProfilePic = '/images/default.png';
 if (isset($_SESSION['user_id'])) {
   $stmt = $pdo->prepare("SELECT profile_picture FROM users WHERE id = ?");
   $stmt->execute([$_SESSION['user_id']]);
@@ -23,6 +23,7 @@ if (isset($_SESSION['user_id'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AnarchoSapien</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" />
+
   <link rel="stylesheet" href="/anarchosapien/styles/style.css" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -117,12 +118,12 @@ if (isset($_SESSION['user_id'])) {
             <!-- dropdown -->
             <div class="dropdown me-3">
               <a
-                class="nav-link dropdown-toggle"
+                class="nav-link dropdown-toggle my-2"
                 href="#"
                 role="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false">
-                <span class="navbar-text me-3 welcome-user">Welcome, <?= htmlspecialchars($_SESSION['user_name']) ?>!</span>
+                <span class="navbar-text welcome-user">Welcome, <?= htmlspecialchars($_SESSION['user_name']) ?>!</span>
               </a>
               <ul class="dropdown-menu bg-dark text-end">
                 <li><a class="dropdown-item text-danger" href="/anarchosapien/users/profile.php?id=<?= $_SESSION['user_id'] ?>">My Profile</a></li>

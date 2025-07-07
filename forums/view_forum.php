@@ -39,15 +39,13 @@ $threads = $threadStmt->fetchAll();
 <div class="container mt-4">
   <!-- back to view.php -->
   <div class="view-forum-header">
-    <a href="../forums/index.php" class="btn btn-dark mb-3" title="Back to all forums">&#8617;</a>
+    <a href="../forums/index.php" class="btn btn-dark mb-3" title="Back to all forums"><i class="fa-solid fa-hand-point-left"></i></a>
+    <a href="../threads/new_thread.php?forum_id=<?= $forumId ?>" class="btn btn-success float-end"><i class="fa-solid fa-plus"></i>New Thread</a>
+
     <div class="d-flex justify-content-between align-items-center">
       <h3 class="section-title-2 ms-4"><?= htmlspecialchars($forum['name']) ?></h3>
-
     </div>
-
-    <h4 class="section-title-3 mb-4 ms-4"><?= htmlspecialchars($forum['description']) ?>
-      <a href="../threads/new_thread.php?forum_id=<?= $forumId ?>" class="btn btn-success float-end me-3">+ New Thread</a>
-    </h4>
+    <h4 class="section-title-3 mb-4 ms-4"><?= htmlspecialchars($forum['description']) ?></h4>
     <hr>
   </div>
   <?php if ($threads): ?>

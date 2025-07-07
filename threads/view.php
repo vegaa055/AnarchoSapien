@@ -70,29 +70,34 @@ require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <div class="container mt-5">
-  <!-- back to view_forum.php?id{forum_id} -->
-  <a href="../forums/view_forum.php?id=<?= $thread['forum_id'] ?>" class="btn btn-dark mb-3" title="Back to all threads">&#8617;</a>
-  <h2 class="section-title-3"><?= htmlspecialchars($thread['title'])  ?></h2>
-
-  <p class="text-primary">By <?= htmlspecialchars($thread['user_name'] ?? 'Unknown') ?> on <?= date('F j, Y H:i', strtotime($thread['created_at'])) ?> <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $first_post['user_id']): ?>
-      <a href="edit_post.php?id=<?= $first_post['id'] ?>" class="btn btn-link me-2 threads-link-reg">Edit</a>
+  <div class="view-forum-header">
+    <!-- Back button and Title -->
+    <a href="../forums/view_forum.php?id=<?= $thread['forum_id'] ?>" class="btn btn-dark mb-3" title="Back to all threads"><i class="fa-solid fa-hand-point-left"></i></a>
+    <!-- If user is the author show edit link -->
+    <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $first_post['user_id']): ?>
+      <a href="edit_post.php?id=<?= $first_post['id'] ?>" class="btn btn-link me-2 threads-link-reg float-end">Edit Post</a>
       <!-- <a href="delete_post.php?id=<?= $first_post['id'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this post?')">Delete</a> -->
     <?php endif; ?>
-  </p>
-  <hr class="red-line">
+    <h2 class="section-title-3 ms-4"><?= htmlspecialchars($thread['title'])  ?></h2>
+    <!-- Author and date -->
+    <p class="text-primary ms-4">By
+      <?= htmlspecialchars($thread['user_name'] ?? 'Unknown') ?> on
+      <?= date('F j, Y g:i a', strtotime($thread['created_at'])) ?>
+    </p>
+    <hr class="red-line">
+  </div>
 
-
-  <div class="bg-dark text-white p-3 rounded mb-4">
+  <div class="first-post text-black p-3 rounded mb-4">
     <?= nl2br(htmlspecialchars($first_post['content'])) ?>
   </div>
 
   <h4 class="section-title-3">Replies</h4>
   <hr class="mb-4">
   <?php foreach ($replies as $reply): ?>
-    <div class="mb-3">
-      <strong><?= htmlspecialchars($reply['user_name']) ?></strong>
-      <small class="text-primary"><?= date('F j, Y H:i', strtotime($reply['created_at'])) ?></small>
-      <p><?= nl2br(htmlspecialchars($reply['content'])) ?></p>
+    <div class="mb-3 thread-reply">
+      <span class="text-black"><?= htmlspecialchars($reply['user_name']) ?></span>
+      <span class="text-primary">|<?= date('F j, Y g:i a', strtotime($reply['created_at'])) ?></span>
+      <p class="text-black"><?= nl2br(htmlspecialchars($reply['content'])) ?></p>
     </div>
     <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $reply['user_id']): ?>
       <a href="edit_post.php?id=<?= $reply['id'] ?>" class="btn btn-sm btn-outline-warning me-2">Edit</a>

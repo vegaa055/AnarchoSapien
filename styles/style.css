@@ -301,6 +301,20 @@ hr.red-line {
   margin-bottom: 1rem;
   border-radius: 8px;
 }
+
+.first-post {
+  background-color: #e3e8e9;
+  font-family: "Calibri", sans-serif;
+  font-size: 1.2rem;
+}
+
+.thread-reply {
+  background-color: #e3e8e9;
+  font-family: "Calibri", sans-serif;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.2rem;
+}
 footer {
   margin-top: 2rem;
   padding: 1rem;

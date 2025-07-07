@@ -83,8 +83,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 include __DIR__ . '/../includes/header.php';
 ?>
 <link rel="stylesheet" href="<?= BASE_URL ?>../styles/style.css" />
+<script>
+  tinymce.init({
+    selector: '#content',
+    plugins: 'image link code lists fullscreen',
+    toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image | code fullscreen',
+    menubar: false,
+    branding: false,
+    height: 400,
+    automatic_uploads: true,
+    images_upload_url: '/anarchosapien/users/upload_image.php?article_id=<?= $article["id"] ?>',
+    images_upload_credentials: true,
+    setup: function(editor) {
+      editor.on('change', function() {
+        editor.save();
+      });
+    }
+  });
+</script>
 <div class="container mt-5">
-  <h2>Edit Article</h2>
 
   <?php if ($success): ?>
     <div class="alert alert-success">Article updated successfully.</div>

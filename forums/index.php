@@ -3,7 +3,7 @@ require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/db.php';
 // Start session
 session_start();
-require_once __DIR__ . '/../includes/header.php';
+
 
 // Fetch categories and their forums
 $categories = $pdo->query("SELECT * FROM forum_categories ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
@@ -14,6 +14,7 @@ foreach ($categories as $category) {
   $stmt->execute([$category['id']]);
   $categoryForums[$category['id']] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <div class="container mt-5">

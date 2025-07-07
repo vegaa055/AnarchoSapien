@@ -25,7 +25,7 @@ include '../includes/header.php';
     <?php endif; ?>
 
     <div class="text-start mx-auto" style="max-width: 600px;">
-      <h5>About</h5>
+      <h5 class="section-title-3">About</h5>
       <hr class="text-danger" style="width: 50%; margin: 0; margin-top: 10px; margin-bottom: 20px;">
       <p><?= nl2br(htmlspecialchars($user['bio'])) ?: '<span class="text-muted">No bio available.</span>' ?></p>
     </div>
