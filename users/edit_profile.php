@@ -50,8 +50,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
-<!-- ── Cropper.js CSS ───────────────── -->
+<!-- Cropper.js CDN -->
 <link href="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.js"></script>
+
 <link rel="stylesheet" href="<?= BASE_URL ?>../styles/style.css" />
 <div class="container mt-5" style="max-width: 600px;">
   <h3 class="section-title-3">Edit Profile</h3>
@@ -90,8 +92,7 @@ require_once __DIR__ . '/../includes/header.php';
 </div>
 
 <!-- ── Popper.js ──────────────────────── -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-..." crossorigin="anonymous"></script>
-<!-- ── Cropper.js JS ───────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.js"></script>
 <script>
   let cropper;

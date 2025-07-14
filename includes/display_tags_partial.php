@@ -16,7 +16,7 @@ if ($tags):
   <div class="mt-3">
     <strong>Tags:</strong>
     <?php foreach ($tags as $tag): ?>
-      <a href="../tags/tag.php?name=<?= urlencode($tag['name']) ?>" class="badge bg-danger text-decoration-none me-1 mb-4 p-2" style="font-size:1.1rem;;">
+      <a href="../tags/tag.php?name=<?= urlencode($tag['name']) ?>" class="badge bg-danger text-decoration-none me-1 mb-4 p-1" style="font-size:1rem;;">
         <?= htmlspecialchars($tag['name']) ?>
       </a>
     <?php endforeach; ?>

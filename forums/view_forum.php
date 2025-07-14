@@ -24,7 +24,7 @@ if (!$forum) {
 
 // Fetch threads
 $threadStmt = $pdo->prepare("
-  SELECT t.id, t.title, t.created_at, u.user_name,
+  SELECT t.id, t.title, t.created_at, u.user_name, user_id,
          (SELECT COUNT(*) FROM posts p WHERE p.thread_id = t.id) AS reply_count,
          (SELECT MAX(created_at) FROM posts WHERE thread_id = t.id) AS last_post_time
   FROM threads t
@@ -40,7 +40,11 @@ $threads = $threadStmt->fetchAll();
   <!-- back to view.php -->
   <div class="view-forum-header">
     <a href="../forums/index.php" class="btn btn-dark mb-3" title="Back to all forums"><i class="fa-solid fa-hand-point-left"></i></a>
-    <a href="../threads/new_thread.php?forum_id=<?= $forumId ?>" class="btn btn-success float-end"><i class="fa-solid fa-plus"></i>New Thread</a>
+
+    <!-- Only show the New Thread button if user is registered and logged in -->
+    <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id']): ?>
+      <a href="../threads/new_thread.php?forum_id=<?= $forumId ?>" class="btn btn-success float-end"><i class="fa-solid fa-plus"></i>New Thread</a>
+    <?php endif; ?>
 
     <div class="d-flex justify-content-between align-items-center">
       <h3 class="section-title-2 ms-4"><?= htmlspecialchars($forum['name']) ?></h3>
@@ -57,7 +61,16 @@ $threads = $threadStmt->fetchAll();
               <?= htmlspecialchars($thread['title']) ?>
             </a>
             <div class="text-muted small">
-              Started by <?= htmlspecialchars($thread['user_name'] ?? 'Unknown') ?> on <?= date("F j, Y, g:i a", strtotime($thread['created_at'])) ?>
+              Started by
+              <a href="/anarchosapien/users/profile.php?id=<?= $thread['user_id'] ?>"
+                class="text-dark"
+                target="_blank">
+                <?= htmlspecialchars($thread['user_name'] ?? 'Unknown') ?>
+              </a>
+              on <?= date("F j, Y, g:i a", strtotime($thread['created_at'])) ?>
+
+              <!-- Link to started by user's profile -->
+
             </div>
           </div>
           <div class="text-end small">

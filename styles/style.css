@@ -18,7 +18,7 @@ body {
 }
 
 .cover {
-  background-image: url("https://cdn.midjourney.com/fd45d784-9303-41fc-942c-16c39628e585/0_1.png");
+  background-image: url("https://cdn.midjourney.com/28085ec7-bae1-4d19-b60b-76d50cdbbc52/0_1.png");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -314,6 +314,113 @@ hr.red-line {
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 1.2rem;
+}
+
+.vote-btn {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  opacity: 0.6;
+  filter: drop-shadow(0 0 3px rgba(24, 27, 43, 0.85));
+}
+
+.vote-btn:hover {
+  opacity: 0.85;
+}
+
+.vote-btn.voted {
+  filter: drop-shadow(2px 3px 3px rgba(17, 23, 80, 0.65));
+  transform: scale(1.15);
+  opacity: 1;
+}
+
+.vote-btn.voted:hover {
+  
+  opacity: 0.65;
+}
+
+.vote-score {
+  font-family: "Special Elite", monospace;
+  color: #000000;
+  font-size: 1rem;
+}
+
+.vote-post-btn.voted {
+  font-weight: bold;
+  color: #007bff;
+}
+
+.vote-post-btns {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  filter: drop-shadow(0 0 3px rgba(91, 94, 112, 0.85));
+}
+
+.vote-post-btns:hover {
+  filter: drop-shadow(0 0 5px rgba(91, 94, 112, 1));
+}
+
+.edit-delete-link {
+  color: #770e0e;
+  font-family: "Special Elite", monospace;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.edit-delete-link:hover {
+  color: #d62828;
+  text-decoration: underline;
+}
+
+.seperator {
+  color: #adb5bd;
+  margin: 0 0.5rem;
+}
+
+.vertical-line {
+  border-left: 1px solid #003c70;
+  height: 100%;
+
+}
+
+.user-section-posts{
+  border-right: #a8a8a8 solid 1px;
+}
+
+
+.user-profile-picture {
+  margin: auto;
+  display: block;
+}
+
+.user-profile-picture:hover {
+  transform: scale(1.1);
+  transition: transform 0.3s ease;
+}
+
+.user-section-name{
+  font-family: "Pirata One", cursive;
+  color: #d62828;
+  font-size: 1.8rem;
+  margin: auto;
+  text-align: center;
+  text-shadow: #474f57 1px 1px 3px;
+}
+
+.user-section-name:hover {
+  color: #a72121;
+  text-shadow: #474f57 1px 1px 2px;
+  transition: color 0.3s ease;
+}
+
+.user-section-info {
+  color: #494949;
+  font-size: 1.1rem;
+}
+
+.post-content{
+  padding: 1rem;
 }
 footer {
   margin-top: 2rem;

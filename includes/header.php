@@ -66,13 +66,19 @@ if (isset($_SESSION['user_id'])) {
           <li class="nav-item">
             <a class="nav-link" href="/anarchosapien/about/about.php">About</a>
           </li>
+          <li>
+            <a class="nav-link" href="#">Articles</a>
+          </li>
           <li class="nav-item">
             <a class="nav-link" aria-current="page" href="/anarchosapien/forums/index.php">Forums</a>
           </li>
           <!-- TODO: Only show for author/admin users once user types are added to db -->
-          <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="/anarchosapien/articles/create.php">Create Article</a>
-          </li>
+          <?php
+          if (isset($_SESSION['user_id'])):
+            echo "<li class=\"nav-item\">";
+            echo "<a class=\"nav-link\" aria-current=\"page\" href=\"/anarchosapien/articles/create.php\">Create Article</a>";
+            echo "</li>";
+          endif; ?>
           <li class="nav-item dropdown">
             <a
               class="nav-link dropdown-toggle"
@@ -104,7 +110,7 @@ if (isset($_SESSION['user_id'])) {
               <li>
                 <hr class="dropdown-divider" />
               </li>
-              <li><a class="dropdown-item" href="<?= BASE_URL ?>all_tags.php">All Tags</a></li>
+              <li><a class="dropdown-item" href="/anarchosapien/tags/all_tags.php">All Tags</a></li>
             </ul>
 
           </li>
@@ -115,7 +121,7 @@ if (isset($_SESSION['user_id'])) {
             <a href="/anarchosapien/users/profile.php?id=<?= $_SESSION['user_id'] ?>">
               <img src="/anarchosapien/users/<?= htmlspecialchars($userProfilePic) ?>" class="rounded-circle pfp-thumbnail" alt="Profile" style="margin-right:8px; width: 35px; height: 35px; object-fit: cover;">
             </a>
-            <!-- dropdown -->
+            <!-- ── dropdown menu for user/profile/edit profile/logout ───────────────── -->
             <div class="dropdown me-3">
               <a
                 class="nav-link dropdown-toggle my-2"
@@ -126,12 +132,12 @@ if (isset($_SESSION['user_id'])) {
                 <span class="navbar-text welcome-user">Welcome, <?= htmlspecialchars($_SESSION['user_name']) ?>!</span>
               </a>
               <ul class="dropdown-menu bg-dark text-end">
-                <li><a class="dropdown-item text-danger" href="/anarchosapien/users/profile.php?id=<?= $_SESSION['user_id'] ?>">My Profile</a></li>
-                <li><a class="dropdown-item text-danger" href="/anarchosapien/users/edit_profile.php">Edit Profile</a></li>
-                <li><a class="dropdown-item text-danger" href="/anarchosapien/users/logout.php">Logout</a></li>
+                <li><a class="dropdown-item text-light" href="/anarchosapien/users/profile.php?id=<?= $_SESSION['user_id'] ?>">My Profile</a></li>
+                <li><a class="dropdown-item text-light" href="/anarchosapien/users/edit_profile.php">Edit Profile</a></li>
+                <li><a class="dropdown-item text-light" href="/anarchosapien/users/logout.php">Logout</a></li>
               </ul>
 
-              <!-- <a href="/anarchosapien/users/logout.php" class="btn btn-outline-danger">Logout</a> -->
+              <!-- ── user is logged out or not a member - show login/register btns ───────────────── -->
             <?php else: ?>
               <a href="/anarchosapien/users/login.php" class="btn btn-outline-success me-2">Login</a>
               <a href="/anarchosapien/users/register.php" class="btn btn-outline-primary">Register</a>

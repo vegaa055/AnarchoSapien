@@ -19,7 +19,7 @@ $tags = $tagStmt->fetchAll();
   <?php if ($tags): ?>
     <div class="mt-3">
       <?php foreach ($tags as $tag): ?>
-        <a href="tag.php?name=<?= urlencode($tag['name']) ?>" class="badge bg-danger text-decoration-none me-2 mb-2 p-2" style="font-size:1.1rem;">
+        <a href="tag.php?name=<?= urlencode($tag['name']) ?>" class="badge bg-danger text-decoration-none me-2 mb-2 p-1" style="font-size:1rem;">
           <?= htmlspecialchars(ucfirst($tag['name'])) ?> <small>(<?= $tag['usage_count'] ?>)</small>
         </a>
       <?php endforeach; ?>
