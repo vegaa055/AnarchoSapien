@@ -60,25 +60,36 @@ if (isset($_SESSION['user_id'])) {
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+          <!-- ── Home ──────────────────────── -->
           <li class="nav-item">
             <a class="nav-link" href="/anarchosapien/index.php">Home</a>
           </li>
+
+          <!-- ── About ──────────────────────── -->
           <li class="nav-item">
             <a class="nav-link" href="/anarchosapien/about/about.php">About</a>
           </li>
-          <li>
+
+          <!-- ── Articles ──────────────────────── -->
+          <li class="nav-item">
             <a class="nav-link" href="#">Articles</a>
           </li>
+
+          <!-- ── Forums ──────────────────────── -->
           <li class="nav-item">
             <a class="nav-link" aria-current="page" href="/anarchosapien/forums/index.php">Forums</a>
           </li>
-          <!-- TODO: Only show for author/admin users once user types are added to db -->
+
+          <!-- ── Create Article Button ──────────────────────── -->
           <?php
           if (isset($_SESSION['user_id'])):
             echo "<li class=\"nav-item\">";
             echo "<a class=\"nav-link\" aria-current=\"page\" href=\"/anarchosapien/articles/create.php\">Create Article</a>";
             echo "</li>";
           endif; ?>
+
+          <!-- ── Topics Dropdown ──────────────────────── -->
           <li class="nav-item dropdown">
             <a
               class="nav-link dropdown-toggle"
@@ -121,6 +132,7 @@ if (isset($_SESSION['user_id'])) {
             <a href="/anarchosapien/users/profile.php?id=<?= $_SESSION['user_id'] ?>">
               <img src="/anarchosapien/users/<?= htmlspecialchars($userProfilePic) ?>" class="rounded-circle pfp-thumbnail" alt="Profile" style="margin-right:8px; width: 35px; height: 35px; object-fit: cover;">
             </a>
+            
             <!-- ── dropdown menu for user/profile/edit profile/logout ───────────────── -->
             <div class="dropdown me-3">
               <a

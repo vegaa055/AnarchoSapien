@@ -422,6 +422,13 @@ hr.red-line {
 .post-content{
   padding: 1rem;
 }
+
+/* dropdown highlight color */
+.dropdown-menu a:hover {
+  background-color: #343a40;
+  color: #ffffff;
+}
+
 footer {
   margin-top: 2rem;
   padding: 1rem;
