@@ -32,6 +32,7 @@ if (isset($_SESSION['user_id'])) {
     href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Special+Elite&display=swap"
     rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERwTkw=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -132,7 +133,7 @@ if (isset($_SESSION['user_id'])) {
             <a href="/anarchosapien/users/profile.php?id=<?= $_SESSION['user_id'] ?>">
               <img src="/anarchosapien/users/<?= htmlspecialchars($userProfilePic) ?>" class="rounded-circle pfp-thumbnail" alt="Profile" style="margin-right:8px; width: 35px; height: 35px; object-fit: cover;">
             </a>
-            
+
             <!-- ── dropdown menu for user/profile/edit profile/logout ───────────────── -->
             <div class="dropdown me-3">
               <a

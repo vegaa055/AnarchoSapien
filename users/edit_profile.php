@@ -17,6 +17,7 @@ if (!$user) die("User not found");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $bio = trim($_POST['bio']);
+  $quote = trim($_POST['quote']);
   $profile_picture = $user['profile_picture'];
 
   /* ── Handle profile picture upload ───────────────── */
@@ -41,8 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
   }
 
-  $stmt = $pdo->prepare("UPDATE users SET bio = ?, profile_picture = ? WHERE id = ?");
-  $stmt->execute([$bio, $profile_picture, $user_id]);
+  $stmt = $pdo->prepare("UPDATE users SET bio = ?, quote = ?, profile_picture = ? WHERE id = ?");
+  $stmt->execute([$bio, $quote, $profile_picture, $user_id]);
 
   header("Location: profile.php?id=$user_id");
   exit;
@@ -57,18 +58,29 @@ require_once __DIR__ . '/../includes/header.php';
 <link rel="stylesheet" href="<?= BASE_URL ?>../styles/style.css" />
 <div class="container mt-5" style="max-width: 600px;">
   <h3 class="section-title-3">Edit Profile</h3>
+  <hr>
   <form method="POST" enctype="multipart/form-data">
     <div class="mb-3">
-      <label class="form-label">PfP</label><br>
-      <img id="currentPreview" src="<?= $user['profile_picture'] ?: 'images/default.png' ?>" class="rounded mb-2" style="width: 100px; height: 100px; object-fit: cover;">
+      <label class="form-label">Profile Picture</label><br>
+      <img id="currentPreview" src="<?= $user['profile_picture'] ?: 'images/default.png' ?>" class="rounded mb-3" style="width: 100px; height: 100px; object-fit: cover;">
+
       <input type="file" name="profile_picture" id="profile_picture_input" class="form-control" accept="image/*">
       <input type="hidden" name="cropped_image" id="cropped_image">
       <canvas id="crop_canvas" style="display: none;"></canvas>
     </div>
+
     <div class="mb-3">
       <label class="form-label">About Me</label>
       <textarea name="bio" rows="5" class="form-control"><?= htmlspecialchars($user['bio']) ?></textarea>
     </div>
+
+    <!-- quote -->
+    <div class="mb-3">
+      <label class="form-label">Quote</label>
+      <textarea name="quote" rows="2" class="form-control"><?= htmlspecialchars($user['quote']) ?></textarea>
+    </div>
+
+
     <button type="submit" class="btn btn-primary">Save Changes</button>
   </form>
 

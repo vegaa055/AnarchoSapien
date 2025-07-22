@@ -181,6 +181,40 @@ hr.red-line {
   color: #d62828;
   font-size: 2.5rem;
   margin-bottom: 1rem;
+  margin-left: 1rem;
+}
+
+.profile-side-info {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  margin-left: 1rem;           
+}
+
+.profile-picture-info {
+  background-color: #1f1f1f;
+  border-radius: 8px;
+}
+
+.user-quote{
+  font-family: "Special Elite", monospace;
+  color: #e2e2e2;
+  font-size: 1rem;
+  margin-top: 0.5rem;
+  margin-left: 1rem;
+  font-style: italic;
+}
+
+.profile-joined {
+  color: #adb5bd;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  margin-left: 1rem;
+}
+
+.edit-profile{
+  align-self: flex-end;
+  margin-top: 4rem;
 }
 
 .welcome-user {
@@ -197,7 +231,6 @@ hr.red-line {
 
 .like-btn {
   font-family: "Special Elite", monospace;
-
 }
 
 .comment {
@@ -272,7 +305,6 @@ hr.red-line {
   margin-top: 0.5rem;
 }
 
-
 .mission-section {
   background-color: #1f1f1f;
   padding: 2rem;
@@ -303,17 +335,58 @@ hr.red-line {
 }
 
 .first-post {
-  background-color: #e3e8e9;
+  background-color: #d0d1d1;
+  border-bottom: #838788 solid 4px;
   font-family: "Calibri", sans-serif;
   font-size: 1.2rem;
 }
 
 .thread-reply {
   background-color: #e3e8e9;
+  border-bottom: #838788 solid 4px;
   font-family: "Calibri", sans-serif;
-  padding: 1rem;
+
   border-radius: 8px;
   margin-bottom: 1.2rem;
+  margin-right: 2rem;
+
+  border-left: 2px solid #ccc;
+  padding-left: .75rem;
+}
+
+.thread-reply-pfp {
+  width: 20px;
+  height: 20px;
+  margin-right: 1rem;
+  width: 2rem;
+}
+
+.reply-btn{
+  background-color: #3a3a3a;
+  color: #adb5bd;
+  font-size: 1rem;
+  text-decoration: none;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  margin-left: auto;
+  cursor: pointer;
+  width: fit-content;
+  border-bottom: #0c0c0c solid 2px;
+}
+
+.vote-controls {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin-top: 1rem; 
+  margin-left: 0.5rem;
+  width: 7rem;
+  justify-content: center;
+  background-color: #d4dadf;
+  border-bottom: #848c94 solid 2px;
+  padding: 0.5rem;
+  border-radius: 16px;
 }
 
 .vote-btn {
@@ -340,9 +413,9 @@ hr.red-line {
 }
 
 .vote-score {
-  font-family: "Special Elite", monospace;
+  font-family: "Share Tech", monospace;
   color: #000000;
-  font-size: 1rem;
+  font-size: 1.1rem;
 }
 
 .vote-post-btn.voted {
@@ -350,16 +423,32 @@ hr.red-line {
   color: #007bff;
 }
 
-.vote-post-btns {
-  background-color: transparent;
+.vote-post-btn {
   border: none;
+  background-color: transparent;
   cursor: pointer;
   filter: drop-shadow(0 0 3px rgba(91, 94, 112, 0.85));
+  border-radius: 12px;
+  align-items: center;
 }
 
-.vote-post-btns:hover {
-  filter: drop-shadow(0 0 5px rgba(91, 94, 112, 1));
+.vote-post-btn:hover {
+  background-color: rgba(252, 252, 252, 0.5);
+  transition: background-color 0.3s ease;
 }
+
+.vote-row {
+  position: absolute;
+  bottom: 0;
+}
+
+.replied-on-row {
+  background-color: #2c2c2c;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-radius: 8px 8px 0 0;
+  border-bottom: #d62828 solid 2px;
+} 
 
 .edit-delete-link {
   color: #770e0e;
@@ -371,6 +460,10 @@ hr.red-line {
 .edit-delete-link:hover {
   color: #d62828;
   text-decoration: underline;
+}
+
+.edit-delete-posts {
+  display: inline;
 }
 
 .seperator {
@@ -385,27 +478,52 @@ hr.red-line {
 }
 
 .user-section-posts{
+  background-color: #343a40;
   border-right: #a8a8a8 solid 1px;
+  border-bottom: #212529 solid 2px;
+  border-radius: 0 0 8px 8px;
 }
 
+.user-section-quote {
+  color: #a8a8a8;
+  font-size: .9rem;
+  text-align: center;
+  
+  font-style: italic;
+}
 
 .user-profile-picture {
   margin: auto;
   display: block;
+  width: 120px;
+  height: 120px;
+  filter: drop-shadow(5px 5px 8px rgba(11, 12, 14, 0.85));
 }
 
 .user-profile-picture:hover {
   transform: scale(1.1);
+  filter: drop-shadow(2px 2px 5px rgba(11, 12, 14, 0.85));
+  transition: filter 0.4s ease, transform 0.3s ease;
   transition: transform 0.3s ease;
 }
 
-.user-section-name{
-  font-family: "Pirata One", cursive;
-  color: #d62828;
-  font-size: 1.8rem;
-  margin: auto;
+.user-joined-on{
+  color: #adb5bd;
+  font-size: 0.9rem;
+  margin-top: 0;
   text-align: center;
-  text-shadow: #474f57 1px 1px 3px;
+
+}
+
+.user-section-name{
+  font-family: "Share Tech", monospace;
+  text-align: center;
+  font-size: 1.4rem;
+  color: #d62828;
+  font-weight: bold;
+  text-shadow: #111111 1px 1px 3px;
+  margin-bottom: 0;
+  margin-top: 0.5rem;
 }
 
 .user-section-name:hover {
@@ -415,12 +533,22 @@ hr.red-line {
 }
 
 .user-section-info {
-  color: #494949;
+  color: #b8b8b8;
   font-size: 1.1rem;
 }
 
 .post-content{
   padding: 1rem;
+}
+
+.post-content-container{
+  margin-top: 1rem;
+  padding-left: 1rem;
+}
+
+.post-reply-content {
+  font-size: 1.1rem;
+  color: #8f8f8f;
 }
 
 /* dropdown highlight color */
@@ -429,6 +557,64 @@ hr.red-line {
   color: #ffffff;
 }
 
+.profile-picture{
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  /* display in upper left */
+  float: left;
+  border-radius: 8px;
+
+}
+
+.replies-title{
+  margin-left: 2rem;
+  margin-top: 1rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+}
+
+.replies-title-container {
+  margin-top: 2rem;
+
+  padding: 1rem;
+  height: 5rem;
+  background-image: url("/anarchosapien/images/red-brushstroke.png");
+  background-size: 16rem;
+  background-repeat: no-repeat;
+}
+
+.user-pfp-threads {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 1.2rem;
+}
+
+.username-threads {
+  font-family: "Share Tech", monospace;
+  color: #f8f9fa;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.name-pfp {
+  display: flex;
+  padding-bottom: 1rem;
+  margin-top: 0.5rem;
+  margin-left: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  align-items: center;
+  background-color: #d4dadf;
+  border-radius: 8px;
+  border-bottom: #848c94 solid 2px;
+  width:fit-content; 
+}                                                 
+
 footer {
   margin-top: 2rem;
   padding: 1rem;
@@ -436,3 +622,50 @@ footer {
   border-top: 1px solid #343a40;
   color: #adb5bd;
 }
+
+@media only screen and (max-width: 600px) {
+
+  .user-section-info{
+    text-align: center;
+  }
+
+  .user-post-info {
+    text-align: center;
+
+  }
+  .user-section-posts{
+    border-right: none;
+    margin-bottom: 8px;
+  }
+
+  .post-content {
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+
+  .post-reply-content {
+    font-size: 1rem;
+  }
+
+  .user-section-info{
+    text-align: center;
+    margin-top: 0.15rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .user-section-quote {
+    text-align:center;
+    margin-top: 0.5rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .user-profile-picture {
+    width: 100px;
+    height: 100px;
+  }
+
+  .user-section-name {
+    font-size: 1.6rem;
+  }
+}
+
